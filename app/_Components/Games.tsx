@@ -36,7 +36,7 @@ const Games: React.FC = () => {
     const [totalGames, setTotalGames] = useState(0);
     const [sortBy, setSortBy] = useState<SortField>('title');
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-    const limit = 5; // 5 jeux par page
+    const limit = 6; // 5 jeux par page
 
     useEffect(() => {
         const fetchGames = async () => {
