@@ -15,10 +15,10 @@ const Footer: React.FC = () => {
                             <Link href="/about" className="hover:underline hover:text-[hsl(22.64,100%,61.4%)] me-4 md:me-6">About</Link>
                         </li>
                         <li>
-                            <Link href="/privacy-policy" className="hover:underline hover:text-[hsl(22.64,100%,61.4%)] me-4 md:me-6">Privacy Policy</Link>
+                            <Link href="/policies" className="hover:underline hover:text-[hsl(22.64,100%,61.4%)] me-4 md:me-6">Privacy Policy</Link>
                         </li>
                         <li>
-                            <Link href="/terms-of-service" className="hover:underline hover:text-[hsl(22.64,100%,61.4%)] me-4 md:me-6">Terms of Service</Link>
+                            <Link href="/terms" className="hover:underline hover:text-[hsl(22.64,100%,61.4%)] me-4 md:me-6">Terms of Service</Link>
                         </li>
                         <li>
                             <Link href="/contact" className="hover:underline hover:text-[hsl(22.64,100%,61.4%)]">Contact</Link>
