@@ -13,6 +13,8 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import {Spacing} from "@/app/_Components/Spacing";
+import Footer from "@/app/_Components/Footer";
 
 interface GameType {
     _id: string;
@@ -78,7 +80,7 @@ const Games: React.FC = () => {
     return (
         <Section>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-[hsl(0,0%,98%)]">Games</h2>
+                <h2 className="text-2xl font-bold text-[hsl(0,0%,98%)]"></h2>
                 <div className="flex space-x-2">
                     <button
                         onClick={() => handleSort('title')}
@@ -96,7 +98,7 @@ const Games: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
-                    <div key={game._id} className="bg-[hsl(240,10%,3.9%)] border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col">
+                    <div key={game._id} className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col">
                         <img className="w-full h-48 object-cover rounded-t-lg" src={`${game.imagePath}`} alt={game.title} />
                         <div className="p-5 flex flex-col flex-grow">
                             <h5 className="text-xl font-semibold tracking-tight text-[hsl(0,0%,98%)] mb-2">{game.title}</h5>
@@ -176,6 +178,8 @@ const Games: React.FC = () => {
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
+            <Spacing/>
+            <Footer/>
         </Section>
     );
 }

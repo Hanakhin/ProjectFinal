@@ -5,7 +5,7 @@ const Logo = () => {
     return (
         <Link href="/" className="flex flex-col items-center space-x-2 hover:opacity-80 transition-opacity duration-300 ">
             <Image
-                src="/image/logo/test.svg"
+                src="/image/logo/Logo.svg"
                 alt="GameStore Logo"
                 width={250}
                 height={250}
