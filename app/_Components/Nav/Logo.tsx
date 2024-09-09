@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Logo = () => {
     return (
-        <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-300">
+        <Link href="/" className="flex flex-col items-center space-x-2 hover:opacity-80 transition-opacity duration-300 ">
             <Image
                 src="/image/logo/test.svg"
                 alt="GameStore Logo"
@@ -11,6 +11,7 @@ const Logo = () => {
                 height={250}
                 className="w-100 h-100"
             />
+            <h2 className={'text-xs text-orange/80 self-end'}>Vos jeux aux meilleur prix !</h2>
         </Link>
     );
 };
