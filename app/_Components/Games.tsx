@@ -36,7 +36,7 @@ const Games: React.FC = () => {
     const [totalGames, setTotalGames] = useState(0);
     const [sortBy, setSortBy] = useState<SortField>('title');
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-    const limit = 6;
+    const limit = 5; // 5 jeux par page
 
     useEffect(() => {
         const fetchGames = async () => {
@@ -69,7 +69,7 @@ const Games: React.FC = () => {
             setSortBy(field);
             setSortOrder('asc');
         }
-        setPage(1);
+        setPage(1); // Réinitialiser à la première page lors du changement de tri
     };
 
     if (loading) return <Section><p className="text-[hsl(0,0%,98%)]">Loading games...</p></Section>;
@@ -94,24 +94,42 @@ const Games: React.FC = () => {
                     </button>
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
-                    <div key={game._id} className="bg-[hsl(240,10%,3.9%)] border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg">
+                    <div key={game._id} className="bg-[hsl(240,10%,3.9%)] border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col">
                         <img className="w-full h-48 object-cover rounded-t-lg" src={`${game.imagePath}`} alt={game.title} />
-                        <div className="p-5">
+                        <div className="p-5 flex flex-col flex-grow">
                             <h5 className="text-xl font-semibold tracking-tight text-[hsl(0,0%,98%)] mb-2">{game.title}</h5>
-                            <p className="text-[hsl(240,5%,64.9%)] mb-3 line-clamp-2">{game.description}</p>
-                            <div className="flex items-center mb-3">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star key={i} className="w-4 h-4 text-[hsl(22.64,100%,61.4%)]" fill="currentColor" />
-                                ))}
-                                <span className="bg-[hsl(240,3.7%,15.9%)] text-[hsl(0,0%,98%)] text-xs font-semibold px-2.5 py-0.5 rounded ms-3">5.0</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-3xl font-bold text-[hsl(0,0%,98%)]">${game.price.toFixed(2)}</span>
-                                <button className="text-[hsl(0,0%,98%)] bg-[hsl(22.64,100%,61.4%)] hover:bg-[hsl(22.64,100%,51.4%)] focus:ring-4 focus:outline-none focus:ring-[hsl(22.64,100%,71.4%)] font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                                    Add to cart
-                                </button>
+                            <p className="text-[hsl(240,5%,64.9%)] mb-3 line-clamp-2 flex-grow">{game.description}</p>
+                            <div className="mt-auto">
+                                <div className="flex items-center mb-3">
+                                    {(() => {
+                                        const rating = Math.floor(Math.random() * 5) + 1; // Génère un nombre entre 1 et 5
+                                        return (
+                                            <>
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className={`w-4 h-4 ${i < rating ? 'text-[hsl(22.64,100%,61.4%)]' : 'text-gray-300'}`}
+                                                        fill={i < rating ? 'currentColor' : 'none'}
+                                                    />
+                                                ))}
+                                                <span
+                                                    className="bg-[hsl(240,3.7%,15.9%)] text-[hsl(0,0%,98%)] text-xs font-semibold px-2.5 py-0.5 rounded ms-3">
+                    {rating.toFixed(1)}
+                </span>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span
+                                        className="text-3xl font-bold text-[hsl(0,0%,98%)]">${game.price.toFixed(2)}</span>
+                                    <button
+                                        className="text-[hsl(0,0%,98%)] bg-[hsl(22.64,100%,61.4%)] hover:bg-[hsl(22.64,100%,51.4%)] focus:ring-4 focus:outline-none focus:ring-[hsl(22.64,100%,71.4%)] font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                        Add to cart
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
