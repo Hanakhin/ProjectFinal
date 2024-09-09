@@ -3,7 +3,7 @@ import Logo from "@/app/_Components/Nav/Logo";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Settings } from "lucide-react";
+import { User, LogOut, SquareMenu,Settings } from "lucide-react";
 import { Code } from "@/app/_Components/Code";
 import {
     DropdownMenu,
@@ -44,6 +44,12 @@ const Nav = () => {
                                     <Settings className="mr-2 h-4 w-4" />
                                     <span>Settings</span>
                                 </DropdownMenuItem>
+                                {session.user?.role === 'admin' && (
+                                    <DropdownMenuItem className={'cursor-pointer'}>
+                                        <SquareMenu className="mr-2 h-4 w-4" />
+                                        <Link href={'/admin/panel'}>Admin Panel</Link>
+                                    </DropdownMenuItem>
+                                )}
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => signOut()} className={'cursor-pointer'}>
                                     <LogOut className="mr-2 h-4 w-4" />
@@ -52,14 +58,14 @@ const Nav = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
-                        <>
+                        <div className={'inline-flex gap-4'}>
                             <Link href="/auth/register">
-                                <Button className='rounded'>Register</Button>
+                                <Button className='rounded hover:bg-orange'>Register</Button>
                             </Link>
                             <Link href="/auth/login">
-                                <Button className='rounded'>Login</Button>
+                                <Button className='rounded hover:bg-orange'>Login</Button>
                             </Link>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>

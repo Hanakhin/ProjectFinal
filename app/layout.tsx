@@ -24,7 +24,7 @@ const TomorrowFont = Tomorrow({
 });
 
 export const metadata: Metadata = {
-  title: "GameFlow",
+  title: "Gamerz-Shop",
   description: "Buy your game at the right price!",
 };
 
