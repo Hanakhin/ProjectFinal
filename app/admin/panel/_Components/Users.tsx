@@ -1,3 +1,6 @@
+"use client"
+
+
 import React, { useState, useEffect } from 'react';
 import { Section } from "@/app/_Components/Section";
 import { User, Mail, ShieldCheck, Clock, Edit } from 'lucide-react';

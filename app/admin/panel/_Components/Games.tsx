@@ -1,3 +1,6 @@
+"use client"
+
+
 import React, { useState, useEffect } from 'react';
 import { Section } from "@/app/_Components/Section";
 import { Gamepad, Calendar, Tag, DollarSign, Film, Building, Monitor, Edit, ChevronUp, ChevronDown } from 'lucide-react';
