@@ -24,8 +24,8 @@ const TomorrowFont = Tomorrow({
 });
 
 export const metadata: Metadata = {
-  title: "Gamerz-Shop",
-  description: "Buy your game at the right price!",
+  title: "GameZone",
+  description: "Achetez vos jeux aux meilleurs prix!",
 };
 
 export default function RootLayout({
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={'h-full'}>
     <Provider>
       <body
         className={ cn(GeistSans.variable,GeistMono.variable,TomorrowFont.variable, 'font-sans h-full bg-background text-foreground')}

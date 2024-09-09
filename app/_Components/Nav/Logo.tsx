@@ -11,7 +11,7 @@ const Logo = () => {
                 height={250}
                 className="w-100 h-100"
             />
-            <h2 className={'text-xs text-orange/80 self-end'}>Vos jeux aux meilleur prix !</h2>
+            <h2 className={'text-xs text-orange/80 self-end'}>Vos jeux aux meilleurs prix !</h2>
         </Link>
     );
 };
