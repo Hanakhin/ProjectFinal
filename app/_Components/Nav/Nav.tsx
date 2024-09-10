@@ -49,6 +49,10 @@ const Nav = () => {
                                         <Link href={'/admin/panel'}>Admin Panel</Link>
                                     </DropdownMenuItem>
                                 )}
+                                <DropdownMenuItem>
+                                    <SquareMenu className={'mr-2 h-4 w-4'}/>
+                                    <Link href={`/cart/${session?.user?.id}`}>Panier</Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => signOut()} className={'cursor-pointer'}>
                                     <LogOut className="mr-2 h-4 w-4" />

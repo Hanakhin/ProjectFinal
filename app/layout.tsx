@@ -5,6 +5,7 @@ import {cn} from "@/lib/utils";
 import {Tomorrow} from "next/font/google"
 
 import {Provider} from "@/app/provider";
+import {ToastContainer} from "react-toastify";
 
 const GeistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,6 +41,16 @@ export default function RootLayout({
         className={ cn(GeistSans.variable,GeistMono.variable,TomorrowFont.variable, 'font-sans h-full bg-background text-foreground')}
       >
         {children}
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            pauseOnHover
+        />
       </body>
     </Provider>
     </html>
