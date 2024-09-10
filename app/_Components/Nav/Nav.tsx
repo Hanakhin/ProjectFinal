@@ -16,7 +16,6 @@ import {
 
 const Nav = () => {
     const { data: session } = useSession();
-
     return (
         <nav className='w-full inline-flex justify-center items-center mt-5'>
             <div className="h-full w-full inline-flex justify-center items-center">
