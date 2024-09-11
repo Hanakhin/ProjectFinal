@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { getGames } from '@/actions/games';
 import {Code} from "@/app/_Components/Code";
+import LoadingSpinner from "@/app/_Components/LoadingSpinner";
 
 interface GameType {
     _id: string;
@@ -81,7 +82,7 @@ const Games: React.FC = () => {
         return null;
     };
 
-    if (loading) return <Section><p className="text-[hsl(0,0%,98%)]">Loading games...</p></Section>;
+    if (loading) return <LoadingSpinner/>;
     if (error) return <Section><p className="text-[hsl(0,62.8%,30.6%)]">Error: {error}</p></Section>;
 
     const totalPages = Math.ceil(totalGames / limit);

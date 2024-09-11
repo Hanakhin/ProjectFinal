@@ -1,34 +1,32 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Gamepad, Joystick, Languages, Star } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowLeft, Tag, DollarSign, Calendar, Clock, ShoppingCart, Star    } from 'lucide-react';
 import { getOneGame } from "@/actions/games";
 import { useParams } from "next/navigation";
 import LoadingSpinner from "@/app/_Components/LoadingSpinner";
 import Error from "@/app/_Components/Error";
+import { Section } from "@/app/_Components/Section";
+import Nav from "@/app/_Components/Nav/Nav";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import GameImage from "@/app/_Components/GameImage";
+import {handleAddCart} from "@/app/game/_functions/AddToCart";
+import {GameData} from "@/app/game/_interfaces/GameData";
+import GameDetailItem from "@/app/game/_components/GameDetailsItem";
+import CharacteristicItem from "@/app/game/_components/CharactItem";
 
-interface GameData {
-    _id: string;
-    title: string;
-    description: string;
-    price: number;
-    category: string[];
-    pegi: string;
-    gameMode: string[];
-    language: string;
-    studio: string;
-    platform: string[];
-    imagePath: string;
-}
 
 const GameDetails: React.FC = () => {
     const [game, setGame] = useState<GameData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const { data: session } = useSession();
 
     const params = useParams();
     const gameId = params.id as string;
+
 
     useEffect(() => {
         const loadGame = async () => {
@@ -54,67 +52,88 @@ const GameDetails: React.FC = () => {
         loadGame();
     }, [gameId]);
 
-    if (loading) return <LoadingSpinner/>;
+    if (loading) return <LoadingSpinner />;
     if (error) return <Error message={error} />;
     if (!game) return <div>Aucune donnée de jeu disponible</div>;
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="bg-card text-card-foreground rounded-lg shadow-lg overflow-hidden">
-                <div className="md:flex">
-                    <div className="md:flex-shrink-0">
-                        <Image
-                            src={game.imagePath}
-                            alt={game.title}
-                            width={400}
-                            height={300}
-                            className="h-48 w-full object-cover md:h-full md:w-48"
-                        />
-                    </div>
-                    <div className="p-8">
-                        <div className="uppercase tracking-wide text-orange text-sm font-semibold">
-                            {game.studio}
+        <Section className={'h-full'}>
+            <Nav />
+            <div className="min-h-screen bg-gradient-to-br custom-gradient">
+                <div className="max-w-7xl mx-auto px-4 py-12">
+                    <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-orange transition-colors">
+                        <ArrowLeft className="mr-2" />
+                        Retour a l'accueil
+                    </Link>
+                    <div className="custom-bg backdrop-filter backdrop-blur-lg rounded-3xl p-8 shadow-2xl">
+                        <div className="flex flex-col lg:flex-row">
+                            <div className="lg:w-1/2 mb-8 lg:mb-0">
+                                <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video">
+                                    <GameImage src={game.imagePath} alt={game.title} priority={true}/>
+                                </div>
+                            </div>
+                            <div className="lg:w-1/2 lg:pl-12">
+                                <h1 className="text-4xl font-bold text-white mb-4">{game.title}</h1>
+                                <p className="text-gray-200 mb-6 text-lg">{game.description}</p>
+                                <div className="grid grid-cols-2 gap-6 mb-8">
+                                    <GameDetailItem icon={<Tag />} label="Catégorie" value={game.category.join(', ')} />
+                                    <GameDetailItem icon={<DollarSign />} label="Prix" value={`${game.price.toFixed(2)} €`} />
+                                    <GameDetailItem icon={<Calendar />} label="Ajouté le" value={new Date(game.createdAt).toLocaleDateString()} />
+                                    <GameDetailItem icon={<Clock />} label="Mis à jour le" value={new Date(game.updatedAt).toLocaleDateString()} />
+                                </div>
+                                <div className="flex flex-row gap-4">
+                                    {!session && (
+                                        <p>Vous devez vous <Link href="/auth/login" className="text-gray-500 hover:text-[#ff7903]">
+                                            connecter</Link> pour ajouter un jeu au panier
+                                        </p>
+                                    )}
+                                    {session && (
+                                        <Button onClick={() => handleAddCart(game,session)} className={'hover:bg-orange'}>
+                                            <ShoppingCart className="mr-2" />
+                                            Ajouter au panier
+                                        </Button>
+                                    )}
+                                    {session?.user?.role === 'admin' && (
+                                        <Link href="/admin/panel">
+                                            <Button className={'hover:bg-orange'}>Modifier</Button>
+                                        </Link>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <h1 className="mt-1 text-4xl font-bold text-primary">{game.title}</h1>
-                        <p className="mt-2 text-muted-foreground">{game.description}</p>
-
-                        <div className="mt-4 flex flex-wrap gap-2">
-                            {game.category.map((cat, index) => (
-                                <span key={index} className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-xs">
-                                    {cat}
-                                </span>
-                            ))}
+                        <div className="mt-12">
+                            <h2 className="text-2xl font-semibold text-white mb-4">Caractéristiques</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <CharacteristicItem label="Plateforme" value={game.platform.join(', ')} />
+                                <CharacteristicItem label="Mode de jeu" value={game.gameMode.join(', ')} />
+                                <CharacteristicItem label="Langue" value={game.language} />
+                                <CharacteristicItem label="PEGI" value={game.pegi} />
+                                <CharacteristicItem label="Studio" value={game.studio} />
+                            </div>
                         </div>
-
-                        <div className="mt-6 flex items-center">
-                            <span className="text-2xl font-bold text-orange">${game.price.toFixed(2)}</span>
-                            <span className="ml-2 px-2 py-1 bg-accent text-accent-foreground rounded text-xs">
-                                <Star size={16} className="inline-block mr-1" aria-label="PEGI rating" />
-                                PEGI {game.pegi}
-                            </span>
-                        </div>
-
-                        <div className="mt-4">
-                            <h2 className="text-lg font-semibold text-primary">Détails du jeu</h2>
-                            <ul className="mt-2 space-y-1 text-muted-foreground">
-                                <li>
-                                    <Languages size={16} className="inline-block mr-1" aria-label="Language" />
-                                    Langue : {game.language}
-                                </li>
-                                <li>
-                                    <Gamepad size={16} className="inline-block mr-1" aria-label="Game Modes" />
-                                    Modes de jeu : {game.gameMode.join(', ')}
-                                </li>
-                                <li>
-                                    <Joystick size={16} className="inline-block mr-1" aria-label="Platforms" />
-                                    Plateformes : {game.platform.join(', ')}
-                                </li>
-                            </ul>
+                        <div className="mt-12">
+                            <h2 className="text-2xl font-semibold text-white mb-4">Avis des joueurs</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {[1, 2].map((_, index) => (
+                                    <div key={index} className="bg-white bg-opacity-10 rounded-xl p-6">
+                                        <div className="flex items-center mb-2">
+                                            <div className="flex text-yellow-400">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <Star key={star} className={star <= 4 ? "text-yellow-400" : "text-gray-400"} />
+                                                ))}
+                                            </div>
+                                            <span className="ml-2 text-white">4.0</span>
+                                        </div>
+                                        <p className="text-gray-200">Un jeu vraiment sympa, mais un peu compliqué par moments. Les graphismes sont époustouflants !</p>
+                                        <p className="text-gray-400 mt-2 text-sm">Par Joueur Anonyme - 15/08/2023</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </Section>
     );
 };
 

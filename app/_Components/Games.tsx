@@ -15,12 +15,11 @@ import {
 } from "@/components/ui/pagination"
 import {Spacing} from "@/app/_Components/Spacing";
 import Footer from "@/app/_Components/Footer";
-import {useSession} from "next-auth/react";
-import {addToCart} from "@/actions/cart";
-import {showToast} from "@/utils/toastUtils";
 import Link from "next/link";
 import LoadingSpinner from "@/app/_Components/LoadingSpinner";
 import Error from '@/app/_Components/Error'
+import {handleAddCart} from "@/app/game/_functions/AddToCart";
+import {useSession} from "next-auth/react";
 
 interface GameType {
     _id: string;
@@ -45,7 +44,7 @@ const Games: React.FC = () => {
     const [sortBy, setSortBy] = useState<SortField>('title');
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
     const limit = 6; // 5 jeux par page
-    const {data:session} = useSession();
+    const {data:session} = useSession()
 
     useEffect(() => {
         const fetchGames = async () => {
@@ -107,12 +106,12 @@ const Games: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
-                    <Link href={`game/details/${game._id}`}>
-                    <div key={game._id} className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col">
+                    <Link href={`game/details/${game._id}`} key={game._id}>
+                    <div className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col h-full">
                         <img className="w-full h-48 object-cover rounded-t-lg" src={`${game.imagePath}`} alt={game.title} />
                         <div className="p-5 flex flex-col flex-grow">
                             <h5 className="text-xl font-semibold tracking-tight text-[hsl(0,0%,98%)] mb-2">{game.title}</h5>
-                            <p className="text-[hsl(240,5%,64.9%)] mb-3 line-clamp-2 flex-grow">{game.description}</p>
+                            <p className="text-[hsl(240,5%,64.9%)] mb-3 flex-grow truncate overflow-hidden">{game.description}</p>
                             <div className="mt-auto">
                                 <div className="flex items-center mb-3">
                                     {(() => {
@@ -138,6 +137,7 @@ const Games: React.FC = () => {
                                     <span
                                         className="text-3xl font-bold text-[hsl(0,0%,98%)]">€{game.price.toFixed(2)}</span>
                                     <button
+                                        onClick={()=>handleAddCart(game,session)}
                                         className="text-[hsl(0,0%,98%)] bg-[hsl(22.64,100%,61.4%)] hover:bg-[hsl(22.64,100%,51.4%)] focus:ring-4 focus:outline-none focus:ring-[hsl(22.64,100%,71.4%)] font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                         Add to cart
                                     </button>

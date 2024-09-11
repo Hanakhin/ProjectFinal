@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getCart, removeFromCart, clearCart } from '@/actions/cart';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, ShoppingBag } from 'lucide-react';
+import {ShoppingCart, ShoppingBag, ArrowLeft} from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -15,6 +15,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import LoadingSpinner from "@/app/_Components/LoadingSpinner";
+import Error from "@/app/_Components/Error";
 
 interface GameType {
     _id: string;
@@ -89,17 +91,20 @@ export default function CartPage({ userId }: { userId: string }) {
         }
     };
 
-    if (loading) return <div>Chargement...</div>;
-    if (error) return <div>Erreur : {error}</div>;
-    if (!cart) return <div>Panier non trouvé</div>;
+    const handlePayment =async()=>{
+        console.log('TODO')
+    }
 
-    if (cart.games.length === 0) {
+    if (loading) return <LoadingSpinner/>;
+    if (error) return <Error message={error}/>;
+
+    if (!   cart) {
         return (
             <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
                 <ShoppingCart size={64} className="text-gray-400" />
                 <h2 className="text-2xl font-semibold text-gray-700">Votre panier est vide</h2>
                 <p className="text-gray-500">Ajoutez des jeux à votre panier pour commencer vos achats.</p>
-                <Link href="/shop" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                <Link href="/" className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-orange hover:text-primary transition-colors">
                     <ShoppingBag className="inline-block mr-2" size={20} />
                     Aller à la boutique
                 </Link>
@@ -110,8 +115,11 @@ export default function CartPage({ userId }: { userId: string }) {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Votre Panier</h1>
+            <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-orange transition-colors">
+                <ArrowLeft className="mr-2" />
+                Retour a l'accueil
+            </Link>
             <Table>
-                <TableCaption>Votre panier actuel.</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[300px]">Jeu</TableHead>
@@ -148,13 +156,20 @@ export default function CartPage({ userId }: { userId: string }) {
                     </TableRow>
                 </TableFooter>
             </Table>
-            <div className="mt-4 text-right">
+            <div className="mt-4 gap-4 flex flex-col max-w-[200px]">
                 <button
                     onClick={handleClearCart}
                     className="bg-red-500 text-white px-4 py-2 mt-2 rounded hover:bg-red-600 transition-colors"
                     disabled={loading}
                 >
                     Vider le panier
+                </button>
+                <button
+                    onClick={() => handlePayment()}
+                    className="bg-orange text-white px-4 py-2 mt-2 rounded hover:bg-orange/80 transition-colors"
+                    disabled={loading}
+                >
+                    Payer {cart.totalPrice}€
                 </button>
             </div>
         </div>

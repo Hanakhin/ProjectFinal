@@ -3,7 +3,7 @@ import Logo from "@/app/_Components/Nav/Logo";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, SquareMenu,Settings } from "lucide-react";
+import {User, LogOut, SquareMenu, Settings, ShoppingBasket} from "lucide-react";
 import { Code } from "@/app/_Components/Code";
 import {
     DropdownMenu,
@@ -50,7 +50,7 @@ const Nav = () => {
                                     </DropdownMenuItem>
                                 )}
                                 <DropdownMenuItem>
-                                    <SquareMenu className={'mr-2 h-4 w-4'}/>
+                                    <ShoppingBasket className={'mr-2 h-4 w-4'}/>
                                     <Link href={`/cart/${session?.user?.id}`}>Panier</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
