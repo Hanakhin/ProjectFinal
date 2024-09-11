@@ -18,6 +18,9 @@ import Footer from "@/app/_Components/Footer";
 import {useSession} from "next-auth/react";
 import {addToCart} from "@/actions/cart";
 import {showToast} from "@/utils/toastUtils";
+import Link from "next/link";
+import LoadingSpinner from "@/app/_Components/LoadingSpinner";
+import Error from '@/app/_Components/Error'
 
 interface GameType {
     _id: string;
@@ -79,11 +82,12 @@ const Games: React.FC = () => {
         setPage(1); // Réinitialiser à la première page lors du changement de tri
     };
 
-    if (loading) return <Section><p className="text-[hsl(0,0%,98%)]">Loading games...</p></Section>;
-    if (error) return <Section><p className="text-[hsl(0,62.8%,30.6%)]">Error: {error}</p></Section>;
+    if (loading) return <LoadingSpinner/>;
+    if (error) return <Error message={error}/>;
 
     return (
         <Section>
+
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-[hsl(0,0%,98%)]"></h2>
                 <div className="flex space-x-2">
@@ -103,6 +107,7 @@ const Games: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
+                    <Link href={`game/details/${game._id}`}>
                     <div key={game._id} className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col">
                         <img className="w-full h-48 object-cover rounded-t-lg" src={`${game.imagePath}`} alt={game.title} />
                         <div className="p-5 flex flex-col flex-grow">
@@ -140,6 +145,7 @@ const Games: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                    </Link>
                 ))}
             </div>
             <Pagination className="mt-6">
