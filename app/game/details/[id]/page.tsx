@@ -94,7 +94,7 @@ const GameDetails: React.FC = () => {
                                         </Button>
                                     )}
                                     {session?.user?.role === 'admin' && (
-                                        <Link href="/admin/panel">
+                                        <Link href={`/admin/game/manage/update/${game._id}`}>
                                             <Button className={'hover:bg-orange'}>Modifier</Button>
                                         </Link>
                                     )}

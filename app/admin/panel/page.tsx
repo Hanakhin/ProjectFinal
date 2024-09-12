@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import { Section } from "@/app/_Components/Section";
 import Nav from "@/app/_Components/Nav/Nav";
-import { User, Gamepad2, Settings, Phone } from 'lucide-react';
+import { User, Gamepad2, Phone } from 'lucide-react';
 
-// Importez vos composants pour chaque onglet
+
 import UsersComponent from './_Components/Users';
 import GamesComponent from './_Components/Games';
 import ContactsComponent from './_Components/Contact';

@@ -3,12 +3,27 @@
 
 import React, { useState, useEffect } from 'react';
 import { Section } from "@/app/_Components/Section";
-import { Gamepad, Calendar, Tag, DollarSign, Film, Building, Monitor, Edit, ChevronUp, ChevronDown } from 'lucide-react';
+import {
+    Gamepad,
+    Calendar,
+    Tag,
+    DollarSign,
+    Film,
+    Building,
+    Monitor,
+    ChevronUp,
+    ChevronDown,
+    Trash
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { getGames } from '@/actions/games';
+import {deleteGame, getGames} from '@/actions/games';
 import {Code} from "@/app/_Components/Code";
 import LoadingSpinner from "@/app/_Components/LoadingSpinner";
+import Modal from '@/app/_Components/modal/CartConfirmationModal';
+import { AlertTriangle } from 'lucide-react';
+import Link from "next/link";
+import {Button} from "@/components/ui/button";
 
 interface GameType {
     _id: string;
@@ -38,6 +53,8 @@ const Games: React.FC = () => {
     const [sortBy, setSortBy] = useState<SortField>('title');
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
     const limit = 5; // Nombre de jeux par page
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
 
     useEffect(() => {
         const fetchGames = async () => {
@@ -82,6 +99,23 @@ const Games: React.FC = () => {
         return null;
     };
 
+    const handleDelete = async () => {
+        if (!selectedGame) return;
+        try {
+            const result = await deleteGame(selectedGame._id);
+            if (result.success) {
+                setGames((prevGames) => prevGames.filter(game => game._id !== selectedGame._id));
+                setShowModal(false);
+            } else {
+                setError(result.error || "Erreur lors de la suppression du jeu");
+            }
+        } catch (err) {
+            console.error("Erreur lors de la suppression du jeu:", err);
+            setError("Une erreur est survenue lors de la suppression du jeu");
+        }
+    };
+
+
     if (loading) return <LoadingSpinner/>;
     if (error) return <Section><p className="text-[hsl(0,62.8%,30.6%)]">Error: {error}</p></Section>;
 
@@ -89,7 +123,10 @@ const Games: React.FC = () => {
 
     return (
         <Section>
-            <h1 className="text-2xl font-bold mb-6 text-[hsl(0,0%,98%)]">Game Management</h1>
+            <div className={'flex flex-row items-center justify-evenly w-full mb-10'}>
+                <h1 className="text-2xl font-bold text-primary">Game Management</h1>
+                <Link  href={'/admin/game/manage/add'}><Button className={'hover:bg-orange'}>Ajouter un jeu</Button></Link>
+            </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-[hsl(240,5%,64.9%)]">
                     <thead className="text-xs uppercase bg-[hsl(240,3.7%,15.9%)] text-[hsl(0,0%,98%)]">
@@ -170,9 +207,10 @@ const Games: React.FC = () => {
                                 {formatDate(game.createdAt)}
                             </td>
                             <td className="px-6 py-4 text-right">
-                                <a href="#" className="font-medium text-[hsl(22.64,100%,61.4%)] hover:underline">
-                                    <Edit className="w-4 h-4 inline" />
-                                </a>
+                                <Trash onClick={() => {
+                                    setSelectedGame(game);
+                                    setShowModal(true);
+                                }} className={'cursor-pointer hover:text-red-600'}/>
                             </td>
                         </tr>
                     ))}
@@ -196,6 +234,19 @@ const Games: React.FC = () => {
                     Next
                 </button>
             </div>
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={handleDelete}
+                title="Confirmer la suppression"
+            >
+                <div className="text-center">
+                    <AlertTriangle className="mx-auto mb-4 text-yellow-400 w-14 h-14" />
+                    <p className="text-gray-500">
+                        Êtes-vous sûr de vouloir supprimer {selectedGame?.title} ?
+                    </p>
+                </div>
+            </Modal>
         </Section>
     );
 };
