@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getCart, removeFromCart, clearCart } from '@/actions/cart';
 import Image from 'next/image';
 import Link from 'next/link';
-import {ShoppingCart, ShoppingBag, Trash} from 'lucide-react';
+import { ShoppingCart, ShoppingBag, Trash, AlertTriangle } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/table"
 import LoadingSpinner from "@/app/_Components/LoadingSpinner";
 import Error from "@/app/_Components/Error";
-import {Section} from "@/app/_Components/Section";
+import { Section } from "@/app/_Components/Section";
 import Nav from "@/app/_Components/Nav/Nav";
-import {loadStripe} from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import Modal from '@/app/_Components/modal/CartConfirmationModal';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -42,6 +43,9 @@ export default function CartPage({ userId }: { userId: string }) {
     const [cart, setCart] = useState<CartType | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [modalAction, setModalAction] = useState<'remove' | 'clear'>('remove');
+    const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
 
     useEffect(() => {
         fetchCart();
@@ -61,10 +65,11 @@ export default function CartPage({ userId }: { userId: string }) {
         }
     };
 
-    const handleRemoveItem = async (gameId: string) => {
+    const handleRemoveItem = async () => {
+        if (!selectedGame) return;
         try {
             setLoading(true);
-            const result = await removeFromCart(userId, gameId);
+            const result = await removeFromCart(userId, selectedGame._id);
             if (result.success) {
                 await fetchCart();
             } else {
@@ -75,6 +80,7 @@ export default function CartPage({ userId }: { userId: string }) {
             console.error(err);
         } finally {
             setLoading(false);
+            setShowModal(false);
         }
     };
 
@@ -92,6 +98,7 @@ export default function CartPage({ userId }: { userId: string }) {
             console.error(err);
         } finally {
             setLoading(false);
+            setShowModal(false);
         }
     };
 
@@ -108,7 +115,7 @@ export default function CartPage({ userId }: { userId: string }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    amount: Math.floor(cart.totalPrice * 100), // Convertir en centimes
+                    amount: Math.floor(cart.totalPrice * 100),
                 }),
             });
 
@@ -130,26 +137,29 @@ export default function CartPage({ userId }: { userId: string }) {
         }
     };
 
-    if (loading) return <LoadingSpinner/>;
-    if (error) return <Error message={error}/>;
+    if (loading) return <LoadingSpinner />;
+    if (error) return <Error message={error} />;
 
-    if (!   cart) {
+    if (!cart || cart.games.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
-                <ShoppingCart size={64} className="text-gray-400" />
-                <h2 className="text-2xl font-semibold text-gray-700">Votre panier est vide</h2>
-                <p className="text-gray-500">Ajoutez des jeux à votre panier pour commencer vos achats.</p>
-                <Link href="/" className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-orange hover:text-primary transition-colors">
-                    <ShoppingBag className="inline-block mr-2" size={20} />
-                    Aller à la boutique
-                </Link>
-            </div>
+            <Section>
+                <Nav />
+                <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
+                    <ShoppingCart size={64} className="text-gray-400" />
+                    <h2 className="text-2xl font-semibold text-gray-700">Votre panier est vide</h2>
+                    <p className="text-gray-500">Ajoutez des jeux à votre panier pour commencer vos achats.</p>
+                    <Link href="/" className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-orange hover:text-primary transition-colors">
+                        <ShoppingBag className="inline-block mr-2" size={20} />
+                        Aller à la boutique
+                    </Link>
+                </div>
+            </Section>
         );
     }
 
     return (
         <Section>
-            <Nav/>
+            <Nav />
             <Table className={'mt-4'}>
                 <TableHeader>
                     <TableRow>
@@ -170,11 +180,15 @@ export default function CartPage({ userId }: { userId: string }) {
                             <TableCell>{game.price.toFixed(2)} €</TableCell>
                             <TableCell className="text-right">
                                 <button
-                                    onClick={() => handleRemoveItem(game._id)}
-                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                                    onClick={() => {
+                                        setSelectedGame(game);
+                                        setModalAction('remove');
+                                        setShowModal(true);
+                                    }}
+                                    className="px-3 py-1 bg-primary text-primary-foreground rounded hover:bg-red-600 transition-colors"
                                     disabled={loading}
                                 >
-                                    <Trash className={'w-4 h-auto'}/>
+                                    <Trash className={'w-4 h-auto'} />
                                 </button>
                             </TableCell>
                         </TableRow>
@@ -191,21 +205,40 @@ export default function CartPage({ userId }: { userId: string }) {
                 <Link href={'/'} className={'hover:underline hover:text-orange'}>Retour</Link>
                 <div className={' flex gap-4'}>
                     <button
-                        onClick={handleClearCart}
-                        className="bg-red-500 text-white px-4 py-2 mt-2 rounded hover:bg-red-600 transition-colors"
+                        onClick={() => {
+                            setModalAction('clear');
+                            setShowModal(true);
+                        }}
+                        className="bg-primary text-primary-foreground px-4 py-2 mt-2 rounded hover:bg-red-600 transition-colors"
                         disabled={loading}
                     >
                         Vider le panier
                     </button>
                     <button
                         onClick={handleCheckout}
-                        className="bg-orange text-white px-4 py-2 mt-2 rounded hover:bg-orange/80 transition-colors"
+                        className="bg-primary text-primary-foreground px-4 py-2 mt-2 rounded hover:bg-orange transition-colors"
                         disabled={loading}
                     >
                         Payer {cart.totalPrice.toFixed(2)}€
                     </button>
                 </div>
             </div>
+
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={modalAction === 'remove' ? handleRemoveItem : handleClearCart}
+                title={modalAction === 'remove' ? "Supprimer l'article" : "Vider le panier"}
+            >
+                <div className="text-center">
+                    <AlertTriangle className="mx-auto mb-4 text-red-600 w-14 h-14" />
+                    <p className="text-primary ">
+                        {modalAction === 'remove'
+                            ? `Êtes-vous sûr de vouloir supprimer "${selectedGame?.title}" de votre panier ?`
+                            : "Êtes-vous sûr de vouloir vider votre panier ?"}
+                    </p>
+                </div>
+            </Modal>
         </Section>
     );
 }
