@@ -35,24 +35,33 @@ const Nav = () => {
                             <DropdownMenuContent align="end" className={'rounded border-0 '}>
                                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
+
+                                <Link href={`/user/profile/${session?.user?.id}`}>
                                 <DropdownMenuItem className={'cursor-pointer'}>
                                     <User className="mr-2 h-4 w-4" />
-                                    <span>Profile</span>
+                                    Profile
                                 </DropdownMenuItem>
+                                </Link>
+
                                 <DropdownMenuItem className={'cursor-pointer'}>
                                     <Settings className="mr-2 h-4 w-4" />
                                     <span>Settings</span>
                                 </DropdownMenuItem>
+
                                 {session.user?.role === 'admin' && (
+                                    <Link href={'/admin/panel'}>
                                     <DropdownMenuItem className={'cursor-pointer'}>
                                         <SquareMenu className="mr-2 h-4 w-4" />
-                                        <Link href={'/admin/panel'}>Admin Panel</Link>
+                                        Admin Panel
                                     </DropdownMenuItem>
+                                    </Link>
                                 )}
-                                <DropdownMenuItem>
+                                <Link href={`/cart/${session?.user?.id}`}>
+                                <DropdownMenuItem className={'cursor-pointer'}>
                                     <ShoppingBasket className={'mr-2 h-4 w-4'}/>
-                                    <Link href={`/cart/${session?.user?.id}`}>Panier</Link>
+                                    Panier
                                 </DropdownMenuItem>
+                                </Link>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => signOut()} className={'cursor-pointer'}>
                                     <LogOut className="mr-2 h-4 w-4" />

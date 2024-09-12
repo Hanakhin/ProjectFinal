@@ -4,11 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { getCart, removeFromCart, clearCart } from '@/actions/cart';
 import Image from 'next/image';
 import Link from 'next/link';
-import {ShoppingCart, ShoppingBag, ArrowLeft} from 'lucide-react';
+import {ShoppingCart, ShoppingBag, Trash} from 'lucide-react';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -17,6 +16,11 @@ import {
 } from "@/components/ui/table"
 import LoadingSpinner from "@/app/_Components/LoadingSpinner";
 import Error from "@/app/_Components/Error";
+import {Section} from "@/app/_Components/Section";
+import Nav from "@/app/_Components/Nav/Nav";
+import {loadStripe} from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 interface GameType {
     _id: string;
@@ -91,9 +95,40 @@ export default function CartPage({ userId }: { userId: string }) {
         }
     };
 
-    const handlePayment =async()=>{
-        console.log('TODO')
-    }
+    const handleCheckout = async () => {
+        if (!cart || cart.totalPrice <= 0) return;
+
+        try {
+            const stripe = await stripePromise;
+            if (!stripe) throw new Error('Stripe failed to load');
+
+            const response = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: Math.floor(cart.totalPrice * 100), // Convertir en centimes
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create checkout session');
+            }
+
+            const session = await response.json();
+
+            const result = await stripe.redirectToCheckout({
+                sessionId: session.id,
+            });
+
+            if (result.error) {
+                console.error("Redirect error:", result.error.message);
+            }
+        } catch (error) {
+            console.error('Error in checkout process:', error);
+        }
+    };
 
     if (loading) return <LoadingSpinner/>;
     if (error) return <Error message={error}/>;
@@ -113,13 +148,9 @@ export default function CartPage({ userId }: { userId: string }) {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Votre Panier</h1>
-            <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-orange transition-colors">
-                <ArrowLeft className="mr-2" />
-                Retour a l'accueil
-            </Link>
-            <Table>
+        <Section>
+            <Nav/>
+            <Table className={'mt-4'}>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[300px]">Jeu</TableHead>
@@ -140,10 +171,10 @@ export default function CartPage({ userId }: { userId: string }) {
                             <TableCell className="text-right">
                                 <button
                                     onClick={() => handleRemoveItem(game._id)}
-                                    className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                                     disabled={loading}
                                 >
-                                    Supprimer
+                                    <Trash className={'w-4 h-auto'}/>
                                 </button>
                             </TableCell>
                         </TableRow>
@@ -156,22 +187,25 @@ export default function CartPage({ userId }: { userId: string }) {
                     </TableRow>
                 </TableFooter>
             </Table>
-            <div className="mt-4 gap-4 flex flex-col max-w-[200px]">
-                <button
-                    onClick={handleClearCart}
-                    className="bg-red-500 text-white px-4 py-2 mt-2 rounded hover:bg-red-600 transition-colors"
-                    disabled={loading}
-                >
-                    Vider le panier
-                </button>
-                <button
-                    onClick={() => handlePayment()}
-                    className="bg-orange text-white px-4 py-2 mt-2 rounded hover:bg-orange/80 transition-colors"
-                    disabled={loading}
-                >
-                    Payer {cart.totalPrice}€
-                </button>
+            <div className="mt-4 flex w-full justify-between">
+                <Link href={'/'} className={'hover:underline hover:text-orange'}>Retour</Link>
+                <div className={' flex gap-4'}>
+                    <button
+                        onClick={handleClearCart}
+                        className="bg-red-500 text-white px-4 py-2 mt-2 rounded hover:bg-red-600 transition-colors"
+                        disabled={loading}
+                    >
+                        Vider le panier
+                    </button>
+                    <button
+                        onClick={handleCheckout}
+                        className="bg-orange text-white px-4 py-2 mt-2 rounded hover:bg-orange/80 transition-colors"
+                        disabled={loading}
+                    >
+                        Payer {cart.totalPrice.toFixed(2)}€
+                    </button>
+                </div>
             </div>
-        </div>
+        </Section>
     );
 }

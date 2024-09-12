@@ -106,9 +106,10 @@ const Games: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
-                    <Link href={`game/details/${game._id}`} key={game._id}>
-                    <div className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col h-full">
+                    <div className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col h-full" key={game._id}>
+                        <Link href={`game/details/${game._id}`} >
                         <img className="w-full h-48 object-cover rounded-t-lg" src={`${game.imagePath}`} alt={game.title} />
+                        </Link>
                         <div className="p-5 flex flex-col flex-grow">
                             <h5 className="text-xl font-semibold tracking-tight text-[hsl(0,0%,98%)] mb-2">{game.title}</h5>
                             <p className="text-[hsl(240,5%,64.9%)] mb-3 flex-grow truncate overflow-hidden">{game.description}</p>
@@ -145,7 +146,6 @@ const Games: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    </Link>
                 ))}
             </div>
             <Pagination className="mt-6">
