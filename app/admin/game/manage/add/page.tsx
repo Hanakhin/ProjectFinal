@@ -4,7 +4,7 @@ import React from 'react';
 import AddGameForm from "./AddGameForm";
 import Nav from "@/app/_Components/Nav/Nav";
 
-const AddGames: React.FunctionComponent = () => {
+const AddGames = () => {
     return (
         <div className="min-h-screen main-bg p-8">
             <Nav />

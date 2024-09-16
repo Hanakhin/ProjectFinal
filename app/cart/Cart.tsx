@@ -49,6 +49,7 @@ export default function CartPage({ userId }: { userId: string }) {
 
     useEffect(() => {
         fetchCart();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
     const fetchCart = async () => {
@@ -107,7 +108,7 @@ export default function CartPage({ userId }: { userId: string }) {
 
         try {
             const stripe = await stripePromise;
-            if (!stripe) throw new Error('Stripe failed to load');
+            if (!stripe) return error;
 
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
@@ -120,7 +121,7 @@ export default function CartPage({ userId }: { userId: string }) {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create checkout session');
+                return error;
             }
 
             const session = await response.json();

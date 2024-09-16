@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {addGame} from "@/actions/games";
-import Link from "next/link";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 interface GameData {
     _id: string;
@@ -64,12 +64,18 @@ const AddGameForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await addGame(gameData);
+                await addGame(gameData);
 
         } catch (error) {
             console.error("Erreur lors de l'ajout du jeu:", error);
+        }finally {
+
         }
     };
+
+    const handleSelectChange = (value:string) =>{
+        setGameData(prev => ({ ...prev, pegi: value }));
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -130,19 +136,18 @@ const AddGameForm: React.FC = () => {
             <div>
                 <label className="block text-white mb-2">PEGI</label>
                 <div className="flex flex-wrap gap-2">
-                    {['3', '7', '12', '16', '18'].map((age) => (
-                        <label key={age} className="inline-flex items-center">
-                            <input
-                                type="radio"
-                                name="pegi"
-                                value={age}
-                                checked={gameData.pegi === age}
-                                onChange={handleInputChange}
-                                className="form-radio text-[#ff7903] custom-bg"
-                            />
-                            <span className="ml-2 text-white">{age}</span>
-                        </label>
-                    ))}
+                    <Select value={gameData.pegi} onValueChange={handleSelectChange}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Pegi" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="3">3</SelectItem>
+                            <SelectItem value="7">7</SelectItem>
+                            <SelectItem value="12">12</SelectItem>
+                            <SelectItem value="16">16</SelectItem>
+                            <SelectItem value="18">18</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
@@ -226,10 +231,7 @@ const AddGameForm: React.FC = () => {
                     <img src={gameData.imagePath} alt="Preview" className="mt-2 w-32 h-32 object-cover"/>
                 )}
             </div>
-            <div className={'flex w-full justify-center gap-4 items-center'}>
-                <Button type="submit" className={'hover:bg-orange'}>Ajouter le jeu</Button>
-                <Link href={'/'} className={'hover:bg-orange'}>Annuler</Link>
-            </div>
+            <Button type="submit">Ajouter le jeu</Button>
         </form>
     );
 };

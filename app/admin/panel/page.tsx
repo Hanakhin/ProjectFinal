@@ -50,7 +50,7 @@ const AdminPage = () => {
                     ))}
                 </ul>
             </div>
-            <div className="mt-6">
+            <div className="my-12">
                 {ActiveComponent && <ActiveComponent />}
             </div>
         </Section>

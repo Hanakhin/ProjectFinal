@@ -58,13 +58,12 @@ export const addGame = async (values: any) => {
 
         const savedGame = await game.save();
 
-        return { success: true, game: savedGame };
+        return { success: true, game: serializeGame(savedGame) };
     } catch (err) {
         console.error(err)
         return { error: "Une erreur s'est produite lors de l'ajout du jeu.", err };
     }
 };
-
 
 export const getGames = async (
     page: number = 1,

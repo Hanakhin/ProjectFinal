@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation';
 import { XCircle, ArrowLeft, AlertTriangle } from 'lucide-react';
 
 const CancelPayment = () => {
-    const [countdown, setCountdown] = useState(5);
+    const [countdown, setCountdown] = useState(3);
     const router = useRouter();
 
     useEffect(() => {
-        let timer;
+        let timer: string | number | NodeJS.Timeout | undefined;
         if (countdown > 0) {
             timer = setTimeout(() => setCountdown(countdown - 1), 1000);
         } else {
@@ -44,7 +44,7 @@ const CancelPayment = () => {
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mb-6">
                         <div
                             className="bg-red-600 h-2.5 rounded-full transition-all duration-1000 ease-linear"
-                            style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+                            style={{ width: `${((3 - countdown) / 3) * 100}%` }}
                         ></div>
                     </div>
 

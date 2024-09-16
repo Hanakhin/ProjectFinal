@@ -8,12 +8,12 @@ export interface GameDocument extends mongoose.Document {
     price: number;
     createdAt: Date;
     updatedAt: Date;
-    category: [string];
+    category: string[];
     pegi:string;
-    gameMode:[string]
+    gameMode:string[]
     language: string;
     studio:string
-    platform:[string]
+    platform:string[]
 }
 
 const GameSchema = new Schema<GameDocument>({
@@ -41,6 +41,7 @@ const GameSchema = new Schema<GameDocument>({
     pegi: {
         type: String,
         required: [true, 'PEGI rating is required'],
+        enum:["3","7","12","16","18"],
     },
     gameMode: {
         type: [String],
