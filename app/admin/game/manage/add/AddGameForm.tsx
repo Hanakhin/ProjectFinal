@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {addGame} from "@/actions/games";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {showToast} from "@/utils/toastUtils";
+import {useRouter} from "next/navigation";
+
 
 interface GameData {
     _id: string;
@@ -34,7 +37,6 @@ const AddGameForm: React.FC = () => {
         platform: [],
         imagePath: ''
     });
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setGameData(prev => ({ ...prev, [name]: value }));
@@ -61,6 +63,7 @@ const AddGameForm: React.FC = () => {
         }
     };
 
+    const router = useRouter()
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -69,8 +72,11 @@ const AddGameForm: React.FC = () => {
         } catch (error) {
             console.error("Erreur lors de l'ajout du jeu:", error);
         }finally {
-
+            showToast("jeu ajouté avec succés",'success')
         }
+        setTimeout(()=>{
+            router.push('/admin/panel');
+        },1000)
     };
 
     const handleSelectChange = (value:string) =>{
