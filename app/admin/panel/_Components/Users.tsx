@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Section } from "@/app/_Components/Section";
-import {User, Mail, ShieldCheck, Clock, Edit, AlertTriangle} from 'lucide-react';
+import {User, Mail, ShieldCheck, Clock, Edit, AlertTriangle, Trash} from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import {deleteUser, getUsers} from "@/actions/users";
@@ -125,7 +125,7 @@ const Users: React.FC = () => {
                                 <button onClick={()=>{
                                     setSelectedUser(user);
                                     setShowModal(true)
-                                }}>delete</button>
+                                }}> <Trash className={'text-red-600/50 hover:text-red-600'}/></button>
                                 <Modal
                                     isOpen={showModal}
                                     onClose={() => setShowModal(false)}
@@ -134,8 +134,8 @@ const Users: React.FC = () => {
                                 >
                                     <div className="text-center">
                                         <AlertTriangle className="mx-auto mb-4 text-red-400 w-14 h-14" />
-                                        <p className="text-primary">
-                                            Êtes-vous sûr de vouloir supprimer <span className={'text-orange'}>{selectedUser?.email}</span> ?
+                                        <p className="text-primary flex flex-col gap-2">
+                                            Êtes-vous sûr de vouloir supprimer <span className={'text-orange text-xl'}>{selectedUser?.email}</span> ?
                                         </p>
                                     </div>
                                 </Modal>

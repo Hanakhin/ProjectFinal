@@ -17,8 +17,8 @@ function serializeGame(game: GameDocument) {
         language: game.language,
         studio: game.studio,
         platform: game.platform,
-        createdAt: game.createdAt?.toISOString(),
-        updatedAt: game.updatedAt?.toISOString()
+        createdAt: game.createdAt?.toString(),
+        updatedAt: game.updatedAt?.toString()
     };
 }
 
