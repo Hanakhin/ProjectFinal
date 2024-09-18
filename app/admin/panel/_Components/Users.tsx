@@ -125,7 +125,7 @@ const Users: React.FC = () => {
                                 <button onClick={()=>{
                                     setSelectedUser(user);
                                     setShowModal(true)
-                                }}> <Trash className={'text-red-600/50 hover:text-red-600'}/></button>
+                                }}> <Trash className={'text-primary hover:text-red-600'}/></button>
                                 <Modal
                                     isOpen={showModal}
                                     onClose={() => setShowModal(false)}
