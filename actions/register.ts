@@ -12,7 +12,7 @@ export const register = async (values:any)=>{
         const userFound = await User.findOne({email});
         if(userFound){
             return{
-                error: "email already exists",
+                error: 'Cet email est deja utilisé',
             }
         }
         const hashedPassword = await bcrypt.hash(password, 10);

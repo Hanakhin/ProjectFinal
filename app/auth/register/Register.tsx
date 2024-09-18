@@ -1,62 +1,60 @@
 "use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import {FormEvent, useState} from "react";
 import Image from "next/image"
 import Link from "next/link"
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { register } from "@/actions/register"; // Ensure this function exists and handles registration
-
-const RegisterFormSchema = z.object({
-    firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-    lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-    email: z.string().email("Adresse email invalide"),
-    password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-});
-
-type RegisterFormValues = z.infer<typeof RegisterFormSchema>;
+import { register } from "@/actions/register";
+import {useRouter} from "next/navigation";
 
 export default function RegisterPage() {
     const [error, setError] = useState<string | null>(null);
+
+    const [pseudo, setPseudo] = useState("");
+    const [email,setEmail] = useState("");
+    const [password,setPassword] = useState("");
+    const [success,setSuccess] = useState<boolean>(false);
+    const [loading,setLoading] = useState<boolean | null>(null);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
     const router = useRouter();
 
-    const form = useForm<RegisterFormValues>({
-        resolver: zodResolver(RegisterFormSchema),
-        defaultValues: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-        }
-    });
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
 
-    const onSubmit = async (values: RegisterFormValues) => {
         try {
             const res = await register({
-                firstName: values.firstName,
-                lastName: values.lastName,
-                email: values.email,
-                password: values.password,
+                name: pseudo,
+                email,
+                password,
             });
 
             if (res?.error) {
+                console.error('Registration error:', res.error);
                 setError(res.error);
+                setSuccess(false);
+                setShowMessage(true);
             } else {
-                router.push("/auth/login");
+                setSuccess(true);
+                setError(null);
+                setShowMessage(true);
             }
-        } catch (e) {
-            console.error(e);
-            setError("Une erreur inattendue s'est produite");
+        } catch (error) {
+            console.error('Unexpected error during registration:', error);
+            setError('An unexpected error occurred. Please try again.');
+            setSuccess(false);
+            setShowMessage(true);
+        } finally {
+            setLoading(false);
+            router.push('auth/login')
+            if (showMessage) {
+                setTimeout(() => {
+                    setShowMessage(false);
+                }, 2000);
+            }
         }
-    };
-
-    const handleGitHubSignUp = () => {
-        // Implement GitHub signup logic here
     };
 
     return (
@@ -78,60 +76,45 @@ export default function RegisterPage() {
                             Entrez vos informations ci-dessous pour créer votre compte
                         </p>
                     </div>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                    <form onSubmit={handleSubmit} className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="firstName">Prénom</Label>
                             <Input
-                                {...form.register("firstName")}
-                                id="firstName"
+                                onChange={e => setPseudo(e.target.value)}
+                                id="pseudo"
+                                name="pseudo"
                                 required
                             />
-                            {form.formState.errors.firstName && (
-                                <p className="text-red-500 text-xs">{form.formState.errors.firstName.message}</p>
-                            )}
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="lastName">Nom</Label>
-                            <Input
-                                {...form.register("lastName")}
-                                id="lastName"
-                                required
-                            />
-                            {form.formState.errors.lastName && (
-                                <p className="text-red-500 text-xs">{form.formState.errors.lastName.message}</p>
-                            )}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
-                                {...form.register("email")}
+                                onChange={e => setEmail(e.target.value)}
                                 id="email"
                                 type="email"
+                                name="email"
                                 placeholder="m@example.com"
                                 required
                             />
-                            {form.formState.errors.email && (
-                                <p className="text-red-500 text-xs">{form.formState.errors.email.message}</p>
-                            )}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="password">Mot de passe</Label>
                             <Input
-                                {...form.register("password")}
+                                onChange={e => setPassword(e.target.value)}
                                 id="password"
                                 type="password"
+                                name="password"
                                 required
                             />
-                            {form.formState.errors.password && (
-                                <p className="text-red-500 text-xs">{form.formState.errors.password.message}</p>
-                            )}
                         </div>
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {showMessage && (
+                            <p className={success ? 'text-green-500' : 'text-red-500'}>
+                                {success ? 'Compte créé avec succès !' : error}
+                            </p>
+                        )}
+                        {loading && <p className="text-orange">Veuillez patientez..</p> }
                         <Button type="submit" className="w-full bg-orange">
                             Créer un compte
-                        </Button>
-                        <Button variant="outline" className="w-full" onClick={handleGitHubSignUp}>
-                            S'inscrire avec GitHub
                         </Button>
                     </form>
                     <div className="mt-4 text-center text-sm">
