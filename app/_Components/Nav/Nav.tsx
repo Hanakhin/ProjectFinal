@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from "@/app/_Components/Nav/Logo";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {User, LogOut, SquareMenu, Settings, ShoppingBasket} from "lucide-react";
+import { User, LogOut, SquareMenu, Settings, ShoppingBasket } from "lucide-react";
 import { Code } from "@/app/_Components/Code";
 import {
     DropdownMenu,
@@ -13,9 +13,29 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {getCart} from "@/actions/cart";
 
 const Nav = () => {
     const { data: session } = useSession();
+    const [cartItemCount, setCartItemCount] = useState(0);
+
+    useEffect(() => {
+        const fetchCart = async () => {
+            if(session?.user?.id){
+                const cart = await getCart(session?.user.id);
+                if(cart && cart.games){
+                    setCartItemCount(cart.games.length);
+                }else{
+                    setCartItemCount(0);
+                }
+            }
+        };
+
+        if (session) {
+            fetchCart();
+        }
+    }, [session]);
+
     return (
         <nav className='w-full inline-flex justify-center items-center mt-5'>
             <div className="h-full w-full inline-flex justify-center items-center">
@@ -25,50 +45,62 @@ const Nav = () => {
 
                 <div className="flex flex-1 h-full justify-end items-center">
                     {session ? (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild className={'rounded'}>
-                                <Button variant="secondary" className="flex items-center gap-2">
-                                    <User className="h-4 w-4" />
-                                    <Code className='text-orange capitalize'>{session.user?.email}</Code>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className={'rounded border-0 '}>
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-
-                                <Link href={`/user/profile/${session?.user?.id}`}>
-                                <DropdownMenuItem className={'cursor-pointer'}>
-                                    <User className="mr-2 h-4 w-4" />
-                                    Profile
-                                </DropdownMenuItem>
-                                </Link>
-
-                                <DropdownMenuItem className={'cursor-pointer'}>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    <span>Settings</span>
-                                </DropdownMenuItem>
-
-                                {session.user?.role === 'admin' && (
-                                    <Link href={'/admin/panel'}>
-                                    <DropdownMenuItem className={'cursor-pointer'}>
-                                        <SquareMenu className="mr-2 h-4 w-4" />
-                                        Admin Panel
-                                    </DropdownMenuItem>
-                                    </Link>
-                                )}
+                        <div className="flex items-center gap-4">
+                            {cartItemCount > 0 && (
                                 <Link href={`/cart/${session?.user?.id}`}>
-                                <DropdownMenuItem className={'cursor-pointer'}>
-                                    <ShoppingBasket className={'mr-2 h-4 w-4'}/>
-                                    Panier
-                                </DropdownMenuItem>
+                                    <div className="relative">
+                                        <ShoppingBasket className="h-6 w-6 text-primary" />
+                                        <span className="absolute -top-2 -right-2 bg-orange text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                                            {cartItemCount}
+                                        </span>
+                                    </div>
                                 </Link>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => signOut()} className={'cursor-pointer'}>
-                                    <LogOut className="mr-2 h-4 w-4" />
-                                    <span>Log out</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                            )}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild className={'rounded'}>
+                                    <Button variant="secondary" className="flex items-center gap-2">
+                                        <User className="h-4 w-4" />
+                                        <Code className='text-orange capitalize'>{session.user?.email}</Code>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className={'rounded border-0 '}>
+                                    <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+
+                                    <Link href={`/user/profile/${session?.user?.id}`}>
+                                        <DropdownMenuItem className={'cursor-pointer'}>
+                                            <User className="mr-2 h-4 w-4" />
+                                            Profil
+                                        </DropdownMenuItem>
+                                    </Link>
+
+                                    <DropdownMenuItem className={'cursor-pointer'}>
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        <span>Paramètres</span>
+                                    </DropdownMenuItem>
+
+                                    {session.user?.role === 'admin' && (
+                                        <Link href={'/admin/panel'}>
+                                            <DropdownMenuItem className={'cursor-pointer'}>
+                                                <SquareMenu className="mr-2 h-4 w-4" />
+                                                Administrateur
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    )}
+                                    <Link href={`/cart/${session?.user?.id}`}>
+                                        <DropdownMenuItem className={'cursor-pointer'}>
+                                            <ShoppingBasket className={'mr-2 h-4 w-4'}/>
+                                            Panier
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => signOut()} className={'cursor-pointer '}>
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <span className={"hover:text-red-700"}>Se déconnecter</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     ) : (
                         <div className={'inline-flex gap-4'}>
                             <Link href="/auth/register">
