@@ -1,15 +1,16 @@
-import { NextResponse } from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import { transporter } from '@/lib/mailer';
 
-export async function POST(req: Request) {
-    const { from, subject, text } = await req.json();
+
+export async function POST(request: NextRequest) {
+    const { from, subject, message } = await request.json();
 
     try {
         await transporter.sendMail({
-            from: from, // L'email de l'utilisateur en session
-            to: process.env.APP_EMAIL, // L'email de l'application
-            subject,
-            text,
+            from: from,
+            to: process.env.APP_EMAIL,
+            subject: subject,
+            text: message, // Use 'text' or 'html' based on your needs
         });
 
         return NextResponse.json({ message: 'Email sent successfully' });

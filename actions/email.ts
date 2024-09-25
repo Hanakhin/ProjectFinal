@@ -19,6 +19,7 @@ function serializeMail(mail: MailDocument) {
 export const addEmail = async (values: any) => {
     const {
         fromEmail,
+        toEmail, // Add this line
         subject,
         message
     } = values;
@@ -28,6 +29,7 @@ export const addEmail = async (values: any) => {
 
         const mail = new Mail({
             from_email: fromEmail,
+            to_email: toEmail, // Include this line
             subject,
             message
         });

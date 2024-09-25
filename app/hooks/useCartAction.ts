@@ -1,14 +1,11 @@
-// hooks/useCartActions.js
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { clearCart, getCart, removeFromCart } from '@/actions/cart';
-import {useRouter} from "next/navigation";
 
 
 export const useCartActions = (initialCart) => {
     const [cart, setCart] = useState(initialCart);
     const { data: session } = useSession();
-    const router = useRouter();
 
     const handleRemoveGame = async (gameId) => {
         if (session?.user?.id) {
