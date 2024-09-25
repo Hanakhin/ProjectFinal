@@ -27,7 +27,6 @@ const MailSchema = new Schema<MailDocument>({
         subject: {
             type: String,
             required: [true, "Veuillez choisir le sujet de votre message"],
-            enum:["J'ai une question","Probleme avec un achat","Probleme avec mon compte","Autre demandes"]
         },
         message:{
             type: String,

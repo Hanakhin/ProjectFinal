@@ -17,6 +17,7 @@ function serializeMail(mail: MailDocument) {
 
 export const addEmail = async (values: any) => {
     const {
+        to_email,
         from_email,
         subject,
         message
@@ -26,6 +27,7 @@ export const addEmail = async (values: any) => {
         await connectDB();
 
         const mail = new Mail({
+            to_email,
             from_email,
             subject,
             message
@@ -33,7 +35,7 @@ export const addEmail = async (values: any) => {
 
         const savedMail = await mail.save();
 
-        return { success: true, mail: serializeMail(savedMail) };
+        return { success: true, mail: savedMail };
     } catch (err) {
         console.error(err);
         return { error: "Une erreur s'est produite lors de l'envoi de votre mail.", err };

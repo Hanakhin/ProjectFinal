@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from 'next/navigation';
+import {addEmail} from "@/actions/email";
 
 const ContactComponent = () => {
     const { data: session } = useSession();
@@ -44,7 +45,7 @@ const ContactComponent = () => {
                     message: mailMessage,
                 }),
             });
-            if(response.ok){
+          /*  if(response.ok){
                 const dataToSend = {
                     from_email:session.user.email,
                     message:mailMessage,
@@ -52,10 +53,11 @@ const ContactComponent = () => {
                 }
                 try{
                     console.log(dataToSend)
-                }catch{
-                    console.log('test')
+                    await addEmail(dataToSend)
+                }catch(err){
+                    console.log(err)
                 }
-            }
+            }*/
             if (!response.ok) {
                 throw new Error('Failed to send email');
             }
