@@ -21,6 +21,7 @@ import Error from '@/app/_Components/Error'
 import {handleAddCart} from "@/app/game/_functions/AddToCart";
 import {useSession} from "next-auth/react";
 import {Button} from "@/components/ui/button";
+import Image from "next/image";
 
 interface GameType {
     _id: string;
@@ -87,7 +88,6 @@ const Games: React.FC = () => {
 
     return (
         <Section>
-
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-[hsl(0,0%,98%)]"></h2>
                 <div className="flex space-x-2">
@@ -107,9 +107,15 @@ const Games: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
-                    <div className="bg-secondary border border-[hsl(240,3.7%,15.9%)] rounded shadow-lg flex flex-col h-full" key={game._id}>
+                    <div className="bg-secondary rounded shadow-lg flex flex-col h-full hover:scale-105 transition duration-150 " key={game._id}>
                         <Link href={`game/details/${game._id}`} >
-                        <img className="w-full h-48 object-cover rounded-t-lg" src={`${game.imagePath}`} alt={game.title} />
+                        <Image
+                            className="w-full object-contain rounded-t"
+                            src={`${game.imagePath}`}
+                            alt={game.title}
+                            width={500}
+                            height={400}
+                        />
                         </Link>
                         <div className="p-5 flex flex-col flex-grow">
                             <h5 className="text-xl font-semibold tracking-tight text-[hsl(0,0%,98%)] mb-2">{game.title}</h5>
