@@ -36,16 +36,14 @@ const SuccessPage = () => {
     const verifyPaymentAndClearCart = async (session_id) => {
         try {
             console.log("Vérification du paiement pour la session:", session_id);
-            const response = await fetch(`/api/verify-payment?session_id=${session_id}`, {
-                method: 'POST'
-            });
+            const response = await fetch(`/api/verify-payment?session_id=${session_id}`, { method: 'POST' });
             const data = await response.json();
             console.log("Réponse de l'API:", data);
 
             if (data.status === 'complete') {
                 console.log("Paiement complet, nettoyage du panier...");
-                await handleClearCart();
-                console.log('Panier vidé avec succès');
+                const clearResult = await handleClearCart(); // Attendez la promesse ici
+                console.log('Résultat du vidage du panier:', clearResult); // Log pour déboguer
                 setPaymentVerified(true);
             } else {
                 console.log("Le statut du paiement n'est pas 'complete':", data.status);
@@ -54,7 +52,6 @@ const SuccessPage = () => {
             console.error('Erreur lors de la vérification du paiement:', error);
         }
     };
-
     return (
         <div className="min-h-screen bg-gradient-to-br custom-gradient flex items-center justify-center">
             <div className="max-w-md w-full">

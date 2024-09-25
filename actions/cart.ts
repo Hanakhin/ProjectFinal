@@ -127,33 +127,20 @@ export const removeFromCart = async (userId: string, gameId: string) => {
     }
 };
 
-export const clearCart = async (userId: string) => {
+// Dans /actions/cart.js
+export const clearCart = async (userId) => {
     try {
-        await connectDB(); // Connecter à la base de données
-
-        // Trouver le panier de l'utilisateur
-        const cart = await Cart.findOne({ user: userId });
-
-        if (!cart) {
-            throw new Error("Panier non trouvé");
+        await connectDB();
+        const result = await Cart.deleteOne({ user: userId });
+        if (result.deletedCount === 1) {
+            return { success: true, message: "Panier vidé avec succès." };
+        } else {
+            return { success: false, error: "Aucun panier trouvé pour cet utilisateur." };
         }
-
-        // Vider le panier
-        cart.games = [];
-
-        // Sauvegarder les modifications dans la base de données
-        await cart.save();
-
-        // Supprimer le panier s'il est vide après avoir vidé les jeux
-        if (cart.games.length === 0) {
-            await Cart.deleteOne({ user: userId });
-            return { success: true, message: "Panier supprimé car il est vide" };
-        }
-
-        return { success: true, cart };
     } catch (error) {
         console.error("Erreur lors du vidage du panier:", error);
         return { success: false, error: error.message };
     }
 };
+
 

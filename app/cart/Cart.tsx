@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getCart, removeFromCart, clearCart } from '@/actions/cart';
+import { getCart, removeFromCart } from '@/actions/cart';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, ShoppingBag, Trash, AlertTriangle } from 'lucide-react';
@@ -20,6 +20,7 @@ import { Section } from "@/app/_Components/Section";
 import Nav from "@/app/_Components/Nav/Nav";
 import { loadStripe } from "@stripe/stripe-js";
 import Modal from '@/app/_Components/modal/CartConfirmationModal';
+import {useCartActions} from "@/app/hooks/useCartAction";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -46,6 +47,8 @@ export default function CartPage({ userId }: { userId: string }) {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [modalAction, setModalAction] = useState<'remove' | 'clear'>('remove');
     const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
+
+    const {handleRemoveGame, handleClearCart } = useCartActions(cart);
 
     useEffect(() => {
         fetchCart();
@@ -78,24 +81,6 @@ export default function CartPage({ userId }: { userId: string }) {
             }
         } catch (err) {
             setError("Erreur lors de la suppression de l'article");
-            console.error(err);
-        } finally {
-            setLoading(false);
-            setShowModal(false);
-        }
-    };
-
-    const handleClearCart = async () => {
-        try {
-            setLoading(true);
-            const result = await clearCart(userId);
-            if (result.success) {
-                await fetchCart();
-            } else {
-                setError(result.error || "Erreur lors du vidage du panier");
-            }
-        } catch (err) {
-            setError("Erreur lors du vidage du panier");
             console.error(err);
         } finally {
             setLoading(false);
