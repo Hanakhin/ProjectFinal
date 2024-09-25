@@ -2,7 +2,6 @@
 
 import { connectDB } from "@/lib/mongodb";
 import Mail, { MailDocument } from '@/models/Mail';
-import { ObjectId } from 'mongodb';
 
 function serializeMail(mail: MailDocument) {
     return {
@@ -18,8 +17,7 @@ function serializeMail(mail: MailDocument) {
 
 export const addEmail = async (values: any) => {
     const {
-        fromEmail,
-        toEmail, // Add this line
+        from_email,
         subject,
         message
     } = values;
@@ -28,8 +26,7 @@ export const addEmail = async (values: any) => {
         await connectDB();
 
         const mail = new Mail({
-            from_email: fromEmail,
-            to_email: toEmail, // Include this line
+            from_email,
             subject,
             message
         });

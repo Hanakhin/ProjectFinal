@@ -8,10 +8,11 @@ import { useRouter } from 'next/navigation';
 
 const ContactComponent = () => {
     const { data: session } = useSession();
-    const router = useRouter();
+    const router = useRouter(); // Initialisez le router
 
     const [mailSubject, setMailSubject] = useState("");
     const [mailMessage, setMailMessage] = useState("");
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState<boolean>(false);
@@ -23,7 +24,7 @@ const ContactComponent = () => {
         "Autre demande"
     ];
 
-    const handleSendMail = async (e) => {
+    const handleSendMail = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!session || !session.user?.email) {
             setError("Vous devez vous connecter pour envoyer un mail.");
@@ -43,7 +44,18 @@ const ContactComponent = () => {
                     message: mailMessage,
                 }),
             });
-
+            if(response.ok){
+                const dataToSend = {
+                    from_email:session.user.email,
+                    message:mailMessage,
+                    subject:mailSubject
+                }
+                try{
+                    console.log(dataToSend)
+                }catch{
+                    console.log('test')
+                }
+            }
             if (!response.ok) {
                 throw new Error('Failed to send email');
             }
@@ -65,8 +77,8 @@ const ContactComponent = () => {
             const timeoutId = setTimeout(() => {
                 setError("");
                 setSuccess(false);
-                router.push('/');
-            }, 3000); // Wait for 3 seconds before redirecting
+                router.push('/')
+            }, 1000);
 
             return () => clearTimeout(timeoutId);
         }
@@ -102,7 +114,7 @@ const ContactComponent = () => {
                     id="message"
                     rows={4}
                     className="block py-2.5 px-0 w-full text-sm text-foreground bg-transparent border-0 border-b-2 border-muted appearance-none focus:outline-none focus:ring-0 focus:border-primary peer resize-none"
-                    placeholder=""
+                    placeholder=" "
                     required
                     value={mailMessage}
                     onChange={(e) => setMailMessage(e.target.value)}
@@ -111,7 +123,7 @@ const ContactComponent = () => {
             </div>
 
             <button type="submit" disabled={loading} className="text-background bg-primary focus:ring-4 focus:outline-none focus:ring-primary/50 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center inline-flex gap-2 items-center hover:bg-orange disabled:opacity-50">
-                {loading ? 'Envoi en cours...' : 'Envoyer le mail'} <PaperPlaneIcon />
+                {loading ? 'Envoi en cours...' : 'Envoyer le mail'} <PaperPlaneIcon/>
             </button>
 
             {error && <p className="text-red-500 mt-2">{error}</p>}
