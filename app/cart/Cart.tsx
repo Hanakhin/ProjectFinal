@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getCart, removeFromCart } from '@/actions/cart';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, ShoppingBag, Trash, AlertTriangle } from 'lucide-react';
@@ -20,7 +19,8 @@ import { Section } from "@/app/_Components/Section";
 import Nav from "@/app/_Components/Nav/Nav";
 import { loadStripe } from "@stripe/stripe-js";
 import Modal from '@/app/_Components/modal/CartConfirmationModal';
-import {useCartActions} from "@/app/hooks/useCartAction";
+import { useCart } from '@/app/contexts/CartContext'
+import { useSession } from "next-auth/react";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -31,69 +31,63 @@ interface GameType {
     imagePath: string;
 }
 
-interface CartType {
-    _id: string;
-    games: GameType[];
-    user: string;
-    totalPrice: number;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export default function CartPage({ userId }: { userId: string }) {
-    const [cart, setCart] = useState<CartType | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [showModal, setShowModal] = useState<boolean>(false);
+export default function CartPage() {
+    const { cart, removeItem, clearCart, refetchCart, isLoading } = useCart();
+    const [error, setError] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const [modalAction, setModalAction] = useState<'remove' | 'clear'>('remove');
     const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
-
-    const {handleRemoveGame, handleClearCart } = useCartActions(cart);
+    const { data: session } = useSession();
+    const [loading,setLoading]= useState<boolean>(false);
 
     useEffect(() => {
-        fetchCart();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userId]);
+        const fetchCart = async () => {
+            if (session?.user?.id) {
+                try {
+                    setLoading(true);
+                    await refetchCart();
+                } catch (err) {
+                    setError("Erreur lors du chargement du panier");
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        };
 
-    const fetchCart = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const cartData = await getCart(userId);
-            setCart(cartData);
-        } catch (err) {
-            setError("Erreur lors du chargement du panier");
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+        fetchCart();
+    }, [session?.user?.id]);
 
     const handleRemoveItem = async () => {
         if (!selectedGame) return;
         try {
-            setLoading(true);
-            const result = await removeFromCart(userId, selectedGame._id);
-            if (result.success) {
-                await fetchCart();
-            } else {
-                setError(result.error || "Erreur lors de la suppression de l'article");
-            }
+            await removeItem(selectedGame._id);
+            await refetchCart();
         } catch (err) {
             setError("Erreur lors de la suppression de l'article");
             console.error(err);
         } finally {
-            setLoading(false);
+            setShowModal(false);
+        }
+    };
+
+    const handleClearCart = async () => {
+        try {
+            await clearCart();
+            await refetchCart();
+        } catch (err) {
+            setError("Erreur lors du vidage du panier");
+            console.error(err);
+        } finally {
             setShowModal(false);
         }
     };
 
     const handleCheckout = async () => {
         if (!cart || cart.totalPrice <= 0) return;
-
         try {
             const stripe = await stripePromise;
-            if (!stripe) return error;
+            if (!stripe) throw new Error("Stripe n'a pas pu être chargé");
 
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
@@ -106,34 +100,33 @@ export default function CartPage({ userId }: { userId: string }) {
             });
 
             if (!response.ok) {
-                return error;
+                throw new Error("Erreur lors de la création de la session de paiement");
             }
 
             const session = await response.json();
-
             const result = await stripe.redirectToCheckout({
                 sessionId: session.id,
             });
 
             if (result.error) {
-                console.error("Redirect error:", result.error.message);
+                throw new Error(result.error.message);
             }
         } catch (error) {
             console.error('Error in checkout process:', error);
+            setError(error.message);
         }
     };
 
-    if (loading) return <LoadingSpinner />;
+    if (isLoading) return <LoadingSpinner />;
     if (error) return <Error message={error} />;
-
     if (!cart || cart.games.length === 0) {
         return (
             <Section>
                 <Nav />
                 <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
-                    <ShoppingCart size={64} className="text-gray-400" />
-                    <h2 className="text-2xl font-semibold text-gray-700">Votre panier est vide</h2>
-                    <p className="text-gray-500">Ajoutez des jeux à votre panier pour commencer vos achats.</p>
+                    <ShoppingCart size={64} className="text-orange" />
+                    <h2 className="text-2xl font-semibold text-orange">Votre panier est vide</h2>
+                    <p className="text-primary">Ajoutez des jeux à votre panier pour commencer vos achats.</p>
                     <Link href="/" className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-orange hover:text-primary transition-colors">
                         <ShoppingBag className="inline-block mr-2" size={20} />
                         Aller à la boutique
@@ -172,7 +165,7 @@ export default function CartPage({ userId }: { userId: string }) {
                                         setShowModal(true);
                                     }}
                                     className="px-3 py-1 bg-primary text-primary-foreground rounded hover:bg-red-600 transition-colors"
-                                    disabled={loading}
+                                    disabled={isLoading}
                                 >
                                     <Trash className={'w-4 h-auto'} />
                                 </button>
@@ -196,14 +189,14 @@ export default function CartPage({ userId }: { userId: string }) {
                             setShowModal(true);
                         }}
                         className="bg-primary text-primary-foreground px-4 py-2 mt-2 rounded hover:bg-red-600 transition-colors"
-                        disabled={loading}
+                        disabled={isLoading}
                     >
                         Vider le panier
                     </button>
                     <button
                         onClick={handleCheckout}
                         className="bg-primary text-primary-foreground px-4 py-2 mt-2 rounded hover:bg-orange transition-colors"
-                        disabled={loading}
+                        disabled={isLoading}
                     >
                         Payer {cart.totalPrice.toFixed(2)}€
                     </button>

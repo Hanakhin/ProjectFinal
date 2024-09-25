@@ -4,15 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, ArrowLeft } from 'lucide-react';
-import { useCartActions } from '@/app/hooks/useCartAction';
+import { useCartActions } from '@/app/hooks/useCart';
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/app/_Components/LoadingSpinner";
+import {useCart} from "@/app/contexts/CartContext";
 
 const SuccessPage = () => {
     const [paymentVerified, setPaymentVerified] = useState(false);
     const [countdown, setCountdown] = useState(3);
     const searchParams = useSearchParams();
-    const { handleClearCart } = useCartActions(null);
+    const { clearCart } = useCart();
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -42,7 +43,7 @@ const SuccessPage = () => {
 
             if (data.status === 'complete') {
                 console.log("Paiement complet, nettoyage du panier...");
-                const clearResult = await handleClearCart(); // Attendez la promesse ici
+                const clearResult = await clearCart(); // Attendez la promesse ici
                 console.log('Résultat du vidage du panier:', clearResult); // Log pour déboguer
                 setPaymentVerified(true);
             } else {

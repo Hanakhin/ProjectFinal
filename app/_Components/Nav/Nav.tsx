@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import Logo from "@/app/_Components/Nav/Logo";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -13,28 +13,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {getCart} from "@/actions/cart";
+import { useCart } from "@/app/contexts/CartContext";
 
 const Nav = () => {
+    const { cart } = useCart();
     const { data: session } = useSession();
-    const [cartItemCount, setCartItemCount] = useState(0);
 
-    useEffect(() => {
-        const fetchCart = async () => {
-            if(session?.user?.id){
-                const cart = await getCart(session?.user.id);
-                if(cart && cart.games){
-                    setCartItemCount(cart.games.length);
-                }else{
-                    setCartItemCount(0);
-                }
-            }
-        };
-
-        if (session) {
-            fetchCart();
-        }
-    }, [session]);
+    // Utiliser useMemo pour optimiser le calcul du nombre d'articles dans le panier
+    const cartItemCount = useMemo(() => cart?.games?.length || 0, [cart]);
 
     return (
         <nav className='w-full inline-flex justify-center items-center mt-5'>
@@ -49,7 +35,7 @@ const Nav = () => {
                             {cartItemCount > 0 && (
                                 <Link href={`/cart/${session?.user?.id}`}>
                                     <div className="relative">
-                                        <ShoppingBasket className="h-6 w-6 text-primary" />
+                                        <ShoppingBasket className="h-6 w-6 text-primary"/>
                                         <span className="absolute -top-2 -right-2 bg-orange text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                                             {cartItemCount}
                                         </span>
@@ -59,7 +45,7 @@ const Nav = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild className={'rounded'}>
                                     <Button variant="secondary" className="flex items-center gap-2">
-                                        <User className="h-4 w-4" />
+                                        <User className="h-4 w-4"/>
                                         <Code className='text-orange capitalize'>{session.user?.email}</Code>
                                     </Button>
                                 </DropdownMenuTrigger>

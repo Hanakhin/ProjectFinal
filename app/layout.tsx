@@ -6,6 +6,7 @@ import {Tomorrow} from "next/font/google"
 
 import {Provider} from "@/app/provider";
 import {ToastContainer} from "react-toastify";
+import {CartProvider} from "@/app/contexts/CartContext";
 
 const GeistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={'h-full'}>
     <Provider>
+      <CartProvider>
       <body
         className={ cn(GeistSans.variable,GeistMono.variable,TomorrowFont.variable, 'font-sans h-full bg-background text-foreground')}
       >
@@ -52,6 +54,7 @@ export default function RootLayout({
             pauseOnHover
         />
       </body>
+      </CartProvider>
     </Provider>
     </html>
   );

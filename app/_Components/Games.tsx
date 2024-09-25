@@ -22,6 +22,7 @@ import {handleAddCart} from "@/app/game/_functions/AddToCart";
 import {useSession} from "next-auth/react";
 import {Button} from "@/components/ui/button";
 import Image from "next/image";
+import AddToCartButton from "@/app/_Components/AddToCartButton";
 
 interface GameType {
     _id: string;
@@ -117,7 +118,7 @@ const Games: React.FC = () => {
                             height={400}
                         />
                         </Link>
-                        <div className="p-5 flex flex-col flex-grow bg-black/70 rounded-b">
+                        <div className="p-5 flex flex-col flex-grow bg-black/70 rounded-b hover:bg-black/90">
                             <h5 className="text-xl font-semibold tracking-tight text-[hsl(0,0%,98%)] mb-2">{game.title}</h5>
                             <p className="text-[hsl(240,5%,64.9%)] mb-3 flex-grow truncate overflow-hidden">{game.description}</p>
                             <div className="mt-auto">
@@ -146,12 +147,7 @@ const Games: React.FC = () => {
                                         className="text-3xl font-bold text-orange">{game.price.toFixed(2)} €</span>
                                     {
                                         session? (
-                                                <button
-                                                    onClick={()=>handleAddCart(game,session)}
-                                                    className=" bg-primary text-primary-foreground hover:bg-orange focus:ring-4 focus:outline-none focus:ring-[hsl(22.64,100%,71.4%)] font-medium text-sm px-5 py-2.5 text-center inline-flex gap-2 justify-center items-center">
-                                                    Ajouter au panier
-                                                    <CirclePlus className={'w-4 h-4 '} />
-                                                </button>
+                                                <AddToCartButton gameId={game._id} gameTitle={game.title}/>
                                             ):
                                             (
                                                 <Link href={'/auth/login'}><Button className={"bg-primary text-primary-foreground hover:bg-orange"}>Se connecter</Button></Link>
