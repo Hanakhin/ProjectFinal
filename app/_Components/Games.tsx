@@ -108,7 +108,7 @@ const Games: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                 {games.map((game) => (
-                    <div className="bg-secondary rounded shadow-lg flex flex-col h-full hover:scale-105 transition duration-150 " key={game._id}>
+                    <div className="bg-secondary rounded  flex flex-col h-full hover:scale-105 transition duration-150 " key={game._id}>
                         <Link href={`game/details/${game._id}`} >
                         <Image
                             className="w-full object-contain rounded-t"

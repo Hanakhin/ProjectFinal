@@ -13,7 +13,6 @@ export interface MailDocument extends mongoose.Document{
 const MailSchema = new Schema<MailDocument>({
         from_email: {
             type: String,
-            unique: true,
             required: [true, "Votre email est nécessaire"],
             match: [
                 /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,

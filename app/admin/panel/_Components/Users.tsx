@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Section } from "@/app/_Components/Section";
-import {User, Mail, ShieldCheck, Clock, Edit, AlertTriangle, Trash} from 'lucide-react';
+import {User, Mail, ShieldCheck, Clock, AlertTriangle, Trash} from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import {deleteUser, getUsers} from "@/actions/users";
@@ -72,7 +72,7 @@ const Users: React.FC = () => {
 
     return (
         <Section>
-            <h1 className="text-2xl font-bold mb-6 text-[hsl(0,0%,98%)]">User Management</h1>
+            <h1 className="text-2xl font-bold mb-6 text-[hsl(0,0%,98%)]">Gestion des utilisateurs</h1>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-[hsl(240,5%,64.9%)]">
                     <thead className="text-xs uppercase bg-[hsl(240,3.7%,15.9%)] text-[hsl(0,0%,98%)]">

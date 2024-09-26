@@ -45,19 +45,6 @@ const ContactComponent = () => {
                     message: mailMessage,
                 }),
             });
-          /*  if(response.ok){
-                const dataToSend = {
-                    from_email:session.user.email,
-                    message:mailMessage,
-                    subject:mailSubject
-                }
-                try{
-                    console.log(dataToSend)
-                    await addEmail(dataToSend)
-                }catch(err){
-                    console.log(err)
-                }
-            }*/
             if (!response.ok) {
                 throw new Error('Failed to send email');
             }

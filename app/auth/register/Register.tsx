@@ -48,7 +48,7 @@ export default function RegisterPage() {
             setShowMessage(true);
         } finally {
             setLoading(false);
-            router.push('auth/login')
+            router.push('/login')
             if (showMessage) {
                 setTimeout(() => {
                     setShowMessage(false);

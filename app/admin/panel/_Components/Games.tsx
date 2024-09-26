@@ -123,8 +123,8 @@ const Games: React.FC = () => {
 
     return (
         <Section>
-            <div className={'flex flex-row items-center justify-evenly w-full mb-10'}>
-                <h1 className="text-2xl font-bold text-primary">Game Management</h1>
+            <div className={'flex flex-row items-center justify-between w-full mb-10'}>
+                <h1 className="text-2xl font-bold text-primary">Gestion des jeux</h1>
                 <Link  href={'/admin/game/manage/add'}><Button className={'hover:bg-orange'}>Ajouter un jeu</Button></Link>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

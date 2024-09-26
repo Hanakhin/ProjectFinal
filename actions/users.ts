@@ -45,24 +45,6 @@ export async function deleteUser(_id: string): Promise<{ success?: boolean; erro
         return { error: "Une erreur est survenue lors de la suppression de l'utilisateur" };
     }
 }
-
-export async function updateUser(_id: string, values: any): Promise<{ success?: boolean; error?: string }> {
-    const { username, email, role } = values;
-    try {
-        await connectDB();
-        const userToModify = await User.findByIdAndUpdate(_id, { username, email, role }, { new: true });
-
-        if (!userToModify) {
-            return { error: 'Utilisateur non trouvé' };
-        }
-
-        return { success: true };
-    } catch (e) {
-        console.error("Erreur lors de la mise à jour de l'utilisateur:", e);
-        return { error: "Une erreur est survenue lors de la mise à jour de l'utilisateur" };
-    }
-}
-
 export async function getOneUser(_id: string): Promise<{ user?: any; error?: string }> {
     try {
         await connectDB();

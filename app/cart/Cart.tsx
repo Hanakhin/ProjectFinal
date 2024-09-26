@@ -21,6 +21,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import Modal from '@/app/_Components/modal/CartConfirmationModal';
 import { useCart } from '@/app/contexts/CartContext'
 import { useSession } from "next-auth/react";
+import {Spacing} from "@/app/_Components/Spacing";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -123,6 +124,7 @@ export default function CartPage() {
         return (
             <Section>
                 <Nav />
+                <Spacing/>
                 <div className="flex flex-col items-center justify-center h-[50vh] space-y-4">
                     <ShoppingCart size={64} className="text-orange" />
                     <h2 className="text-2xl font-semibold text-orange">Votre panier est vide</h2>

@@ -34,31 +34,31 @@ export const addEmail = async (values: any) => {
         });
 
         const savedMail = await mail.save();
+        const serialized = serializeMail(savedMail);
 
-        return { success: true, mail: savedMail };
+        return { success: true, mail: serialized };
     } catch (err) {
         console.error(err);
         return { error: "Une erreur s'est produite lors de l'envoi de votre mail.", err };
     }
 }
 
-export const getMailById = async (id: string) => {
+export const getMails = async () => {
+    await connectDB();
+
     try {
-        await connectDB();
+        const emails = await Mail.find(); // Fetch emails from the database
 
-        if (!ObjectId.isValid(id)) {
-            return { error: "ID de mail invalide" };
+        if (emails.length > 0) {
+            // Serialize each email before returning
+            const serializedEmails = emails.map(serializeMail);
+            return { success: true, emails: serializedEmails }; // Return serialized emails
         }
 
-        const mail = await Mail.findById(id);
-
-        if (!mail) {
-            return { error: "Mail non trouvé" };
-        }
-
-        return { success: true, mail: serializeMail(mail) };
+        return { success: false, error: "Aucun email" }; // Return error if no emails are found
     } catch (err) {
         console.error(err);
-        return { error: "Une erreur s'est produite lors de la récupération du mail.", err };
+        return { success: false, error: "Une erreur est survenue lors de la récupération des emails." }; // Return a user-friendly error message
     }
 }
+
