@@ -18,6 +18,7 @@ const MailSchema = new Schema<MailDocument>({
                 /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                 "l'email est invalide",
             ],
+            unique:false
         },
         to_email: {
             type: String,
