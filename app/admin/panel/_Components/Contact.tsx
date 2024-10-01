@@ -30,7 +30,7 @@ const Contact: React.FC = () => {
         fetchEmails(); // Call the async function
     }, []);
 
-    if (loading) return <Section><LoadingSpinner/></Section>;
+    if (loading) return <Section><LoadingSpinner/>git </Section>;
     if (error) return <Section><p>{error}</p></Section>;
 
     return (

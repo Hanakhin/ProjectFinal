@@ -48,7 +48,7 @@ const CancelPayment = () => {
                         ></div>
                     </div>
 
-                    <Link href="/" className="inline-flex items-center text-[#ff7903] hover:underline">
+                    <Link href="/homepage" className="inline-flex items-center text-[#ff7903] hover:underline">
                         <ArrowLeft className="mr-2" />
                         Retourner à la liste des jeux
                     </Link>

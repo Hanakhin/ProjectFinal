@@ -129,7 +129,7 @@ export default function CartPage() {
                     <ShoppingCart size={64} className="text-orange" />
                     <h2 className="text-2xl font-semibold text-orange">Votre panier est vide</h2>
                     <p className="text-primary">Ajoutez des jeux à votre panier pour commencer vos achats.</p>
-                    <Link href="/" className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-orange hover:text-primary transition-colors">
+                    <Link href="/homepage" className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-orange hover:text-primary transition-colors">
                         <ShoppingBag className="inline-block mr-2" size={20} />
                         Aller à la boutique
                     </Link>

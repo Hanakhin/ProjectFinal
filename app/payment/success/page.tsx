@@ -89,7 +89,7 @@ const SuccessPage = () => {
                         Vous recevrez bientôt un e-mail de confirmation avec les détails de votre commande.
                     </p>
 
-                    <Link href="/" className="inline-flex items-center text-[#ff7903] hover:underline">
+                    <Link href="/homepage" className="inline-flex items-center text-[#ff7903] hover:underline">
                         <ArrowLeft className="mr-2" />
                         Retourner à la page d'accueil
                     </Link>

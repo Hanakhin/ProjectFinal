@@ -1,12 +1,11 @@
-import {Header} from "@/app/_Components/Header";
-import Body from "@/app/_Components/Body";
+
+import LandingPage from "@/app/_Components/LandingPage/LandingPage";
 
 
 export default function Home() {
   return (
       <main>
-          <Header/>
-          <Body/>
+          <LandingPage/>
       </main>
   );
 }

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Logo = () => {
     return (
-        <Link href="/" className="flex flex-col items-center space-x-2 hover:opacity-80 transition-opacity duration-300 ">
+        <Link href="/homepage" className="flex flex-col items-center space-x-2 hover:opacity-80 transition-opacity duration-300 ">
             <Image
                 src="/image/logo/Logo.svg"
                 alt="GameStore Logo"

@@ -124,7 +124,7 @@ export default function RegisterPage() {
                         </Link>
                     </div>
                     <div className="mt-4 text-center text-sm">
-                        <Link href="/" className="underline hover:text-orange">
+                        <Link href="/homepage" className="underline hover:text-orange">
                             Retour à la page d'accueil
                         </Link>
                     </div>

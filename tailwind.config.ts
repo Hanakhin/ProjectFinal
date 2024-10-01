@@ -14,6 +14,15 @@ const config: Config = {
 			tomorrow:["var(--font-tomorrow)"],
 		},
   	extend: {
+		keyframes: {
+			'slide-fade-in': {
+				'0%': { transform: 'translateX(-100%)', opacity: '0' },
+				'100%': { transform: 'translateX(0)', opacity: '1' },
+			}
+		},
+		animation: {
+			'slide-fade-in': 'slide-fade-in 0.5	s ease-out'
+		},
   		colors: {
   			background: 'hsl(var(--background))',
 			orange:'hsl(var(--orange))',

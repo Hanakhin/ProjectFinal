@@ -10,7 +10,7 @@ const NotFound: React.FC = () => {
                 <p className="mt-2 text-primary">
                     Sorry, the page you are looking for does not exist.
                 </p>
-                <Link href="/" className="mt-6 inline-block px-4 py-2 text-white bg-orange rounded hover:bg-orange/80">
+                <Link href="/homepage" className="mt-6 inline-block px-4 py-2 text-white bg-orange rounded hover:bg-orange/80">
                     Go to Home
                 </Link>
             </div>

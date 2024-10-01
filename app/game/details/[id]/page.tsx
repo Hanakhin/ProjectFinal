@@ -61,7 +61,7 @@ const GameDetails: React.FC = () => {
             <Nav />
             <div className="min-h-screen bg-gradient-to-br custom-gradient">
                 <div className="max-w-7xl mx-auto px-4 py-12">
-                    <Link href="/" className="inline-flex items-center text-white mb-6 hover:text-orange transition-colors">
+                    <Link href="/homepage" className="inline-flex items-center text-white mb-6 hover:text-orange transition-colors">
                         <ArrowLeft className="mr-2" />
                         Retour a l'accueil
                     </Link>

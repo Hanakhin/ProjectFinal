@@ -19,7 +19,7 @@ const Unauthorized: React.FC = () => {
                     <p className="text-[hsl(240,5%,64.9%)]">
                        Si vous pensez que c'est une erreur, contactez notre support.
                     </p>
-                    <Link href="/">
+                    <Link href="/homepage">
                         <Button className="mt-4 inline-flex items-center text-[hsl(0,0%,98%)] bg-orange hover:bg-orange/90">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Retour a la page d'acceuil

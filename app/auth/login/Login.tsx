@@ -41,7 +41,7 @@ export default function LoginPage() {
             if (res?.error) {
                 setError(res.error);
             } else if (res?.ok) {
-                router.push("/");
+                router.push("/homepage");
             }
         } catch (e) {
             console.error(e);
@@ -50,7 +50,7 @@ export default function LoginPage() {
     };
 
     const handleGoogleLogin = () => {
-        signIn("google", { callbackUrl: "/" });
+        signIn("google", { callbackUrl: "/homepage" });
     };
 
     return (
@@ -106,7 +106,7 @@ export default function LoginPage() {
                         </Link>
                     </div>
                     <div className="mt-4 text-center text-sm">
-                        <Link href="/" className="underline hover:text-orange">
+                        <Link href="/homepage" className="underline hover:text-orange">
                             Retour a la page d'acceuil
                         </Link>
                     </div>
