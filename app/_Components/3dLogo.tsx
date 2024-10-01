@@ -23,9 +23,7 @@ export default function Model3D({ rotation = [0, 0, 0] }) {
 
     useFrame(() => {
         if (modelRef.current) {
-            modelRef.current.rotation.x += 0.005;
-            modelRef.current.rotation.y += 0.007;
-            modelRef.current.rotation.z += 0.003;
+            modelRef.current.rotation.z += 0.008;
         }
     });
 

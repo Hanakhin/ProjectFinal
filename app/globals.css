@@ -25,5 +25,8 @@
     --ring: 240 4.9% 83.9%;
     --orange: 22.64 100% 61.4%;
   }
+  body{
+    background-image: url('/public/image/bg.png');
+  }
 }
 

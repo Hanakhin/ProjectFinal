@@ -20,6 +20,9 @@ const config: Config = {
 				'100%': { transform: 'translateX(0)', opacity: '1' },
 			}
 		},
+		backgroundImage: {
+			'bg-image': "url('/image/bg.png')",
+		},
 		animation: {
 			'slide-fade-in': 'slide-fade-in 0.5	s ease-out'
 		},
