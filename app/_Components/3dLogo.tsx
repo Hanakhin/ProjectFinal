@@ -17,13 +17,15 @@ export default function Model3D({ rotation = [0, 0, 0] }) {
     React.useEffect(() => {
         const timer = setTimeout(() => {
             api.start({ position: [7, 0, 0] }); // Position finale (à droite de l'écran)
-        }, 100);
+        }, 0);
         return () => clearTimeout(timer);
     }, [api]);
 
     useFrame(() => {
         if (modelRef.current) {
             modelRef.current.rotation.z += 0.008;
+            modelRef.current.rotation.y += 0.008    ;
+
         }
     });
 
