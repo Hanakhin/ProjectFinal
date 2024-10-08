@@ -29,7 +29,8 @@ const SuccessPage = () => {
         if (paymentVerified && countdown > 0) {
             timer = setTimeout(() => setCountdown(countdown - 1), 1000);
         } else if (paymentVerified && countdown === 0) {
-            router.push('/');
+            clearCart()
+            router.push('/homepage');
         }
         return () => clearTimeout(timer);
     }, [paymentVerified, countdown, router]);

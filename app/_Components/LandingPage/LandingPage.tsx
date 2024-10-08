@@ -79,7 +79,7 @@ function LandingPage() {
                     </p>
                     <Link href={'/homepage'} className={'w-fit'}>
                         <button className="px-8 py-4 text-lg bg-orange text-primary rounded-full transition-all duration-100 hover:bg-orange/80 inline-flex justify-center items-center">
-                            Commencer l'aventure <ArrowRight className="ml-2" />
+                            Commencer ! <ArrowRight className="ml-2" />
                         </button>
                     </Link>
 

@@ -14,7 +14,7 @@ const CancelPayment = () => {
         if (countdown > 0) {
             timer = setTimeout(() => setCountdown(countdown - 1), 1000);
         } else {
-            router.push('/');
+            router.push('/homepage');
         }
         return () => clearTimeout(timer);
     }, [countdown, router]);
