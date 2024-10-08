@@ -3,7 +3,6 @@
 import React, { Suspense, useState, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, Stars } from '@react-three/drei';
-import * as THREE from 'three';
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 

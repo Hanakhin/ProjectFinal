@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from 'next/navigation';
-import {addEmail} from "@/actions/email";
 
 const ContactComponent = () => {
     const { data: session } = useSession();
@@ -66,8 +65,10 @@ const ContactComponent = () => {
             const timeoutId = setTimeout(() => {
                 setError("");
                 setSuccess(false);
-                router.push('/')
-            }, 1000);
+                if(success){
+                    router.push('/homepage')
+                }
+            }, 2000);
 
             return () => clearTimeout(timeoutId);
         }

@@ -16,25 +16,32 @@ export default function Model3D({ rotation = [0, 0, 0] }) {
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
-            api.start({ position: [7, 0, 0] }); // Position finale (à droite de l'écran)
+            api.start({ position: [6, 0, 0] }); // Position finale (à droite de l'écran)
         }, 0);
         return () => clearTimeout(timer);
     }, [api]);
 
-    useFrame(() => {
+    useFrame((state) => {
         if (modelRef.current) {
-            modelRef.current.rotation.z += 0.008;
-            modelRef.current.rotation.y += 0.008    ;
+            // Calculer la rotation en fonction du temps
+            const time = state.clock.getElapsedTime();
+            const rotationAmplitude = Math.PI / 6; // 30 degrés
 
+            // Appliquer une rotation sinusoïdale sur l'axe Y
+            modelRef.current.rotation.y += 0.008;
+
+            // Fixer la rotation sur l'axe X
+            modelRef.current.rotation.x = 0;
+
+            // Fixer la position Y (hauteur)
+            modelRef.current.position.y = 0;
+            modelRef.current.rotation.z = 1.5708;
         }
     });
 
     return (
-        <animated.primitive
-            object={scene}
-            ref={modelRef}
-            rotation={rotation}
-            {...spring}
-        />
+        <animated.mesh ref={modelRef} position={spring.position}>
+            <primitive object={scene} />
+        </animated.mesh>
     );
 }
